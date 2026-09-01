@@ -1,0 +1,201 @@
+@import './assets/fonts/fonts.css';
+@import 'https://fonts.googleapis.com/icon?family=Material+Icons';
+@import 'https://necolas.github.io/normalize.css/8.0.1/normalize.css';
+// @import 'tailwindcss';
+
+:root {
+	--white: #ffffff;
+	--black: #333333;
+	--gray: #aaaaaa;
+	--green: #61bb61;
+	--red: #bb6161;
+	--radius: 8px;
+	--shadow: inset 0px 0px 24px 0px rgba(0, 0, 0, 0.25);
+	--line: 1px solid rgba(0, 0, 0, 0.1);
+	--center: 0 auto;
+	--max-width: 800px;
+}
+
+* {
+	box-sizing: border-box;
+	outline: none;
+}
+
+html,
+body {
+	height: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	font-family: 'Source Sans Pro';
+	font-size: 16px;
+	color: var(--black);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: 'Titillium Web';
+	margin: 20px 0;
+}
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-weight: 600;
+}
+h1 {
+	font-size: 46px;
+}
+h2 {
+	font-size: 32px;
+}
+h3 {
+	font-size: 28px;
+}
+h4 {
+	font-size: 24px;
+}
+h5 {
+	font-size: 20px;
+}
+h6 {
+	font-size: 16px;
+}
+
+a {
+	color: var(--green);
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: underline;
+	}
+
+	&:active {
+		color: var(--red);
+	}
+}
+
+hr {
+	color: var(--gray);
+}
+
+/* Forms Custom Styles */
+form {
+	clear: both;
+}
+
+fieldset {
+	border: 1px solid var(--gray);
+	border-radius: var(--radius);
+}
+
+legend {
+	color: var(--gray);
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='tel'],
+input[type='url'],
+input[type='search'],
+input[type='number'],
+input[type='date'],
+input[type='time'],
+input[type='week'],
+input[type='month'],
+input[type='datetime-local'],
+input[type='color'],
+textarea,
+select {
+	border-radius: var(--radius);
+	border: 1px solid var(--gray);
+	padding: 4px;
+}
+
+button,
+input[type='button'],
+input[type='reset'],
+input[type='submit'] {
+	background-color: var(--green);
+	border: 1px solid var(--green);
+	border-radius: var(--radius);
+	font-size: 18px;
+	color: var(--white);
+	padding: 4px 10px;
+}
+
+meter,
+progress,
+input[type='range'] {
+	vertical-align: middle;
+}
+
+input[type='radio'],
+input[type='checkbox'] {
+	vertical-align: bottom;
+	width: 20px;
+	height: 20px;
+	appearance: none;
+	position: relative;
+	outline: none;
+	margin: 0;
+	&::before,
+	&::after {
+		content: '.';
+		display: block;
+		font-size: 0;
+		line-height: 0;
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+	}
+	&::before {
+		box-shadow: inset 0 0 1px 0 var(--gray);
+		border: 1px solid var(--gray);
+		box-sizing: border-box;
+	}
+	&:checked {
+		&::before {
+			background-color: var(--green);
+			border-color: var(--green);
+		}
+	}
+}
+input[type='radio'] {
+	&::before {
+		border-radius: 100%;
+	}
+	&:checked {
+		&::before {
+			box-shadow: inset 0 0 0 3px var(--white);
+		}
+	}
+}
+input[type='checkbox'] {
+	&::before {
+		border-radius: 4px;
+	}
+	&::after {
+		font-family: 'Material Icons';
+		font-size: 20px;
+		line-height: normal;
+		color: var(--white);
+		display: none;
+		content: 'check';
+	}
+	&:checked {
+		&::after {
+			display: block;
+		}
+	}
+}

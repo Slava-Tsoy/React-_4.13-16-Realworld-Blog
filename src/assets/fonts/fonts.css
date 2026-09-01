@@ -304,17 +304,3 @@
 	font-style: italic;
 	font-display: swap;
 }
-
-/* Material Icons */
-@font-face {
-	font-family: 'Material Icons';
-	src: url('materialicons-regular.eot');
-	src:
-		url('materialicons-regular.eot?#iefix') format('embedded-opentype'),
-		url('materialicons-regular.woff2') format('woff2'),
-		url('materialicons-regular.woff') format('woff'),
-		url('materialicons-regular.ttf') format('truetype');
-	font-weight: normal;
-	font-style: normal;
-	font-display: swap;
-}
