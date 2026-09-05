@@ -2,3 +2,59 @@
 .material-icons {
 	color: var(--green);
 }
+
+/* Sticky Mod */
+.sticky {
+	position: sticky;
+	top: 0;
+	right: 0;
+	left: 0;
+}
+
+/* Root */
+#root {
+	height: 100%;
+	min-height: 100%;
+	display: flex;
+	flex-direction: column;
+
+	& > * {
+		width: 100%;
+	}
+}
+
+/* Header */
+.header {
+	display: flex;
+	flex-direction: column;
+}
+
+/* Main */
+.main {
+	max-width: var(--max-width);
+	margin: var(--center);
+
+	&-content {
+		padding: 0 20px;
+		line-height: normal;
+	}
+}
+
+/* Footer */
+.footer {
+	margin: auto 0 0 0;
+
+	&-in {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: wrap;
+	}
+}
+
+/* Copyright */
+.copyright {
+	font-size: 14px;
+	padding: 10px 20px;
+	color: var(--gray);
+}

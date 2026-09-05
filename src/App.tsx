@@ -1,10 +1,17 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 import './App.scss';
-import Preloader from './components/Preloader';
+
+import MainPage from './pages/MainPage';
 
 function App() {
 	return (
 		<>
-			<Preloader />
+			<BrowserRouter>
+				<Routes>
+					<Route path="/" element={<MainPage />} />
+				</Routes>
+			</BrowserRouter>
 		</>
 	);
 }
