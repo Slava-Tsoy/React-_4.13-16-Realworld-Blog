@@ -52,9 +52,31 @@
 	}
 }
 
-/* Copyright */
-.copyright {
-	font-size: 14px;
-	padding: 10px 20px;
-	color: var(--gray);
+/* Page Not Found */
+.page_not_found {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	font-weight: 600;
+	color: var(--green);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 30px;
+
+	&__title {
+		font-family: 'Titillium Web';
+		font-size: 60px;
+	}
+
+	&__text {
+		font-size: 30px;
+	}
+
+	a {
+		text-decoration: underline;
+	}
 }

@@ -1,0 +1,31 @@
+/* Badge */
+.badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+
+	a {
+		text-decoration: none;
+	}
+
+	&__icon {
+		box-shadow: inset 0 0 0 1px var(--white);
+		border-radius: 100%;
+		font-size: 16px;
+		padding: 4px;
+	}
+
+	&__person {
+		display: flex;
+		flex-direction: column;
+	}
+
+	&__name {
+		font-weight: 600;
+	}
+
+	&__date {
+		font-size:12.8px;
+		color: var(--gray);
+	}
+}

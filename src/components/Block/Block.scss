@@ -1,0 +1,13 @@
+/* Block */
+.block {
+	border-radius: var(--radius);
+	border: 1px solid var(--gray);
+	padding: 20px;
+	margin: 20px 0;
+
+	&__title {
+		font-family: 'Titillium Web';
+		font-weight: 600;
+		margin: 0 0 20px 0;
+	}
+}
