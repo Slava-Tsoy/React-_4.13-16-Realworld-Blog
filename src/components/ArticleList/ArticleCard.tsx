@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
+
 import Tags from '../Tags';
 import Badge from '../Badge';
 import Button from '../Button';
@@ -17,11 +18,11 @@ function ArticleCard(props: Props) {
 		<article className="article-card">
 			<div className="article-card-head">
 				<Badge author={author.username} date={format(parseISO(created), 'dd MMMM yyyy')} />
-				<Button text={item.favoritesCount} icon="favorite" />
+				<Button href="#" text={item.favoritesCount} small={true} type="secondary" icon="favorite" />
 			</div>
 			<div className="article-card__content">
 				<h2 className="article-card__title">
-					<Link to={props.itemUrl + '/' + item.slug}>{item.title}</Link>
+					<Link to={props.itemUrl + '/' + item.slug} state={{data: item}}>{item.title}</Link>
 				</h2>
 				<div className="article-card__text">
 					{item.description}

@@ -10,8 +10,8 @@ interface Props {
 function Tags({ items, limit = 20, tagsUrl }: Props) {
 	return (
 		<ul className="tags">
-			{items.slice(0, limit).map((e: any) => ( // .slice(0, limit) для ограничения
-				<li className="tags__item" key={e}>
+			{items.slice(0, limit).map((e: any, key: number) => ( // .slice(0, limit) для ограничения
+				<li className="tags__item" key={key}>
 					<Link to={tagsUrl + '/' + e} className="tags__link">{e}</Link>
 				</li>
 			))}
