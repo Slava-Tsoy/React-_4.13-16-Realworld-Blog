@@ -1,0 +1,51 @@
+/* Pagination */
+.pagination {
+	margin: 20px;
+	display: flex;
+	justify-content: center;
+	color: var(--green);
+
+	&__list {
+		list-style: none;
+		padding: 1px;
+		margin: 0;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 1px;
+	}
+
+	&__item {
+		box-shadow: 0 0 0 1px var(--green);
+	}
+
+	&__link {
+		display: block;
+		padding: 12px 16px;
+		user-select: none;
+
+		&:hover {
+			text-decoration: none;
+		}
+
+		&:active {
+			color: inherit;
+		}
+
+		&--active {
+			cursor: default;
+			background-color: var(--green);
+			color: var(--white);
+
+			&:active {
+				color: var(--white);
+			}
+		}
+
+		&--arrow {
+			cursor: pointer;
+			font-size: 30px;
+			padding: 6px;
+		}
+	}
+}

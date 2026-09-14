@@ -2,8 +2,8 @@ import './Block.scss';
 import Tags from '../Tags';
 
 interface Props {
-	items: any,
-	tagsUrl: string
+	items: any;
+	tagsUrl: string;
 }
 
 function Block(props: Props) {

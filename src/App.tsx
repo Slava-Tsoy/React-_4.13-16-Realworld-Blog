@@ -15,7 +15,7 @@ const api = {
 	url: 'https://realworld.habsida.net/api',
 	articles: '/articles',
 	tags: '/tags',
-	offset: '?iffset=',
+	offset: '?offset=',
 };
 
 function App() {
@@ -25,7 +25,7 @@ function App() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 
-	useEffect(() =>  {
+	useEffect(() => {
 		const control = new AbortController();
 
 		async function getData() {
@@ -33,8 +33,8 @@ function App() {
 				setLoading(true);
 
 				const [articlesRes, tagsRes] = await Promise.all([
-					fetch(api.url  + api.articles, { signal: control.signal }),
-					fetch(api.url  + api.tags, { signal: control.signal })
+					fetch(api.url + api.articles, { signal: control.signal }),
+					fetch(api.url + api.tags, { signal: control.signal }),
 				]);
 
 				if (!articlesRes.ok || !tagsRes.ok) {
@@ -43,7 +43,7 @@ function App() {
 
 				const [articlesData, tagsData] = await Promise.all([
 					articlesRes.json(),
-					tagsRes.json()
+					tagsRes.json(),
 				]);
 
 				setArticles(articlesData.articles);
@@ -75,9 +75,32 @@ function App() {
 		<>
 			<BrowserRouter>
 				<Routes>
-					<Route path="/" element={<MainPage api={api} articles={articles} articlesCount={articlesCount} tags={tags} />} />
-					<Route path="/articles" element={<AllArticlesPage api={api} articles={articles} articlesCount={articlesCount} tags={tags} />} />
-					<Route path="/articles/:slug" element={<ArticlePage api={api} articles={articles} />} />
+					<Route
+						path="/"
+						element={
+							<MainPage
+								api={api}
+								articles={articles}
+								articlesCount={articlesCount}
+								tags={tags}
+							/>
+						}
+					/>
+					<Route
+						path="/articles"
+						element={
+							<AllArticlesPage
+								api={api}
+								articles={articles}
+								articlesCount={articlesCount}
+								tags={tags}
+							/>
+						}
+					/>
+					<Route
+						path="/articles/:slug"
+						element={<ArticlePage api={api} articles={articles} />}
+					/>
 					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</BrowserRouter>

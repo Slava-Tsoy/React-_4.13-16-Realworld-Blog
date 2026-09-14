@@ -5,7 +5,9 @@ function PageInfo() {
 	return (
 		<div className="page-intro">
 			<div className="page-intro-in main">
-				<h1><Link to="/">Realworld Blog</Link></h1>
+				<h1>
+					<Link to="/">Realworld Blog</Link>
+				</h1>
 				<p>A place to share your knowledge.</p>
 			</div>
 		</div>

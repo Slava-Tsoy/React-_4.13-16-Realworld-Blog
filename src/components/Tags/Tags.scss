@@ -21,7 +21,8 @@
 		border: 1px solid var(--gray);
 		color: inherit;
 
-		&:hover, &--active {
+		&:hover,
+		&--active {
 			text-decoration: none;
 			border-color: var(--green);
 			color: var(--green);
