@@ -75,7 +75,7 @@ function Pagination(props: Props) {
 		<nav className="pagination">
 			<ul className="pagination__list">
 				<li className="pagination__item">
-					<Link 
+					<Link
 						to="#"
 						className={clsx(
 							'material-icons',
@@ -108,7 +108,7 @@ function Pagination(props: Props) {
 						) : (
 							<Link
 								to={
-									props.offset + ((i - 1) * props.amountPerPage)
+									props.offset + (i - 1) * props.amountPerPage
 								}
 								className={clsx('pagination__link')}
 								onClick={() => {

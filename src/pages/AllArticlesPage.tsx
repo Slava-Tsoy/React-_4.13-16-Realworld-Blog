@@ -23,7 +23,8 @@ function AllArticlesPage(props: Props) {
 
 	const [searchParams] = useSearchParams();
 	const currentOffset = searchParams.get('offset') || '0';
-	const fetchUrl = props.api.url + articlesUrl + props.api.offset + currentOffset;
+	const fetchUrl =
+		props.api.url + articlesUrl + props.api.offset + currentOffset;
 
 	const [items, setItems] = useState(articles);
 	const [loading, setLoading] = useState(false);
@@ -35,16 +36,16 @@ function AllArticlesPage(props: Props) {
 		async function getData() {
 			try {
 				setLoading(true);
-				
+
 				await fetch(fetchUrl)
-				.then((res) => res.json())
-				.then((data) => {
-					setItems(data.articles);
-				})
-				.catch((error) => {
-					console.error(error);
-					setLoading(false);
-				});
+					.then((res) => res.json())
+					.then((data) => {
+						setItems(data.articles);
+					})
+					.catch((error) => {
+						console.error(error);
+						setLoading(false);
+					});
 			} catch (error: any) {
 				if (error.name !== 'AbortError') {
 					setError(error.message);
