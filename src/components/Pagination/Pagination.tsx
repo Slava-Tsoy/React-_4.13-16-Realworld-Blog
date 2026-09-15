@@ -75,16 +75,20 @@ function Pagination(props: Props) {
 		<nav className="pagination">
 			<ul className="pagination__list">
 				<li className="pagination__item">
-					<span
+					<Link 
+						to="#"
 						className={clsx(
 							'material-icons',
 							'pagination__link',
 							'pagination__link--arrow',
 						)}
-						onClick={() => changePage('prev')}
+						onClick={(e: any) => {
+							e.preventDefault();
+							changePage('prev');
+						}}
 					>
 						arrow_left
-					</span>
+					</Link>
 				</li>
 				{pages.map((i: number) => (
 					<li className="pagination__item" key={i}>
@@ -104,10 +108,12 @@ function Pagination(props: Props) {
 						) : (
 							<Link
 								to={
-									props.offset + (i - 1) * props.amountPerPage
+									props.offset + ((i - 1) * props.amountPerPage)
 								}
 								className={clsx('pagination__link')}
-								onClick={() => changePage()}
+								onClick={() => {
+									changePage();
+								}}
 							>
 								{i}
 							</Link>
@@ -115,16 +121,20 @@ function Pagination(props: Props) {
 					</li>
 				))}
 				<li className="pagination__item">
-					<span
+					<Link
+						to="#"
 						className={clsx(
 							'material-icons',
 							'pagination__link',
 							'pagination__link--arrow',
 						)}
-						onClick={() => changePage('next')}
+						onClick={(e: any) => {
+							e.preventDefault();
+							changePage('next');
+						}}
 					>
 						arrow_right
-					</span>
+					</Link>
 				</li>
 			</ul>
 		</nav>

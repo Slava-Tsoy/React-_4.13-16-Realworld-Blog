@@ -17,12 +17,17 @@
 
 	&__item {
 		box-shadow: 0 0 0 1px var(--green);
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	&__link {
 		display: block;
-		padding: 12px 16px;
+		padding: 12px;
 		user-select: none;
+		min-width: 44px;
+		text-align: center;
 
 		&:hover {
 			text-decoration: none;

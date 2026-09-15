@@ -22,7 +22,7 @@ function App() {
 	const [articles, setArticles] = useState([]);
 	const [articlesCount, setArticlesCount] = useState(0);
 	const [tags, setTags] = useState([]);
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 
 	useEffect(() => {
