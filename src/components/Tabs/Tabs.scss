@@ -1,0 +1,35 @@
+/* Tabs */
+.tabs {
+	list-style: none;
+	padding: 0 20px;
+	margin: 20px 0;
+	display: flex;
+	gap: 10px;
+
+	&__item {
+		color: var(--gray);
+
+		a {
+			display: block;
+			color: inherit;
+			padding: 8px 16px;
+			border-bottom: 2px solid var(--gray);
+
+			&:hover {
+				text-decoration: none;
+			}
+
+			&:active {
+				color: inherit;
+			}
+		}
+
+		&--active {
+			color: var(--green);
+
+			a {
+				border-color: var(--green);
+			}
+		}
+	}
+}

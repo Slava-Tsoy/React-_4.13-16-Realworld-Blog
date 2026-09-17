@@ -13,7 +13,10 @@ function Tags({ items, limit = 20, tagsUrl }: Props) {
 			{items.slice(0, limit).map((e: any, key: number) => (
 				// .slice(0, limit) для ограничения
 				<li className="tags__item" key={key}>
-					<Link to={tagsUrl + '/' + e} className="tags__link">
+					<Link
+						to={tagsUrl + '/' + e.toLowerCase()}
+						className="tags__link"
+					>
 						{e}
 					</Link>
 				</li>

@@ -1,0 +1,27 @@
+/* Profile Page */
+.profile {
+	background-color: var(--black);
+	color: var(--white);
+
+	&-in {
+		padding: 50px 20px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+	}
+
+	&__avatar {
+		width: 132px;
+		height: 132px;
+		border-radius: 100%;
+		overflow: hidden;
+		background: url('../../assets/images/Icon.png') 50% 50% no-repeat;
+		background-size: cover;
+	}
+
+	&__name {
+		margin: 0;
+	}
+}

@@ -1,5 +1,7 @@
 import './ArticlePage.scss';
 
+import Markdown from 'react-markdown';
+
 import { useState, useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
@@ -66,8 +68,9 @@ function ArticlePage(props: Props) {
 			<main className="main">
 				<div className="article">
 					<div className="article__description">
-						<p>{article.description}</p>
-						<p>{article.body}</p>
+						<Markdown>
+							{article.description + '\n\n' + article.body}
+						</Markdown>
 					</div>
 					{article.tagList.length !== 0 && (
 						<Tags

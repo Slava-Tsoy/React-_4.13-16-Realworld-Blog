@@ -8,6 +8,13 @@ import NotFound from './pages/NotFound';
 import MainPage from './pages/MainPage';
 import ArticlePage from './pages/ArticlePage';
 import AllArticlesPage from './pages/AllArticlesPage';
+import ProfilePage from './pages/ProfilePage';
+import {
+	NewPostPage,
+	SettingsPage,
+	SignInPage,
+	SignUpPage,
+} from './pages/FormsPages';
 
 import Preloader from './components/Preloader';
 
@@ -101,6 +108,27 @@ function App() {
 						path="/articles/:slug"
 						element={<ArticlePage api={api} articles={articles} />}
 					/>
+					<Route
+						path="/profile"
+						element={
+							<ProfilePage
+								api={api}
+								articles={articles}
+								articlesCount={articlesCount}
+								tags={tags}
+							/>
+						}
+					/>
+					<Route
+						path="/new_post"
+						element={<NewPostPage api={api} tags={tags} />}
+					/>
+					<Route
+						path="/settings"
+						element={<SettingsPage api={api} />}
+					/>
+					<Route path="/sign_in" element={<SignInPage api={api} />} />
+					<Route path="/sign_up" element={<SignUpPage api={api} />} />
 					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</BrowserRouter>
