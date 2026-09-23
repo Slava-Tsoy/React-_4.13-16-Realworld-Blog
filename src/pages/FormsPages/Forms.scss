@@ -32,6 +32,25 @@
 			padding: 12px 10px 12px 24px;
 			resize: none;
 		}
+
+		&--error {
+			input[type='text'],
+			input[type='email'],
+			input[type='password'],
+			input[type='tel'],
+			input[type='url'],
+			input[type='search'],
+			input[type='number'],
+			textarea {
+				border-color: var(--red);
+			}
+		}
+	}
+
+	&__error-message {
+		display: block;
+		padding: 4px 24px;
+		color: var(--red);
 	}
 
 	&__button {

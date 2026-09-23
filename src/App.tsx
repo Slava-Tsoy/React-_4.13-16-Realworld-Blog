@@ -21,8 +21,10 @@ import Preloader from './components/Preloader';
 const api = {
 	url: 'https://realworld.habsida.net/api',
 	articles: '/articles',
-	tags: '/tags',
 	offset: '?offset=',
+	tags: '/tags',
+	users: '/users',
+	user: '/user',
 };
 
 function App() {
