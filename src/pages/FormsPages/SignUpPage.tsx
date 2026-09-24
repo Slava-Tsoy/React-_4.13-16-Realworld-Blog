@@ -2,6 +2,8 @@ import './Forms.scss';
 
 import clsx from 'clsx';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../Hooks/useAuth';
 
 import Panel from '../../components/Panel';
 import Copyright from '../../components/Copyright';
@@ -11,25 +13,32 @@ interface Props {
 }
 
 function SignUpPage(props: Props) {
+	const { setUser } = useAuth();
 	const { register, handleSubmit, getValues, formState } = useForm({
 		mode: 'onChange',
 	});
 	const errors = formState.errors;
 	const fetch_url = props.api.url + props.api.users;
+	const navigate = useNavigate();
 
 	const onSubmit = async (data: any) => {
-		const { repeatPassword, ...user_data } = data;
+		const { repeatPassword, ...obj_data } = data;
 
 		try {
 			const res = await fetch(fetch_url, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ user: user_data }),
+				body: JSON.stringify({ user: obj_data }),
 			});
 
 			if (res.ok) {
 				alert('Registration successful!');
 			}
+
+			const { user } = await res.json();
+			localStorage.setItem('token', user.token);
+			setUser(user);
+			navigate('/');
 		} catch (error) {
 			console.error('Sending error:', error);
 		}

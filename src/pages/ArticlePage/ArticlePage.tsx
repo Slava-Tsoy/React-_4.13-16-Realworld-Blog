@@ -47,6 +47,8 @@ function ArticlePage(props: Props) {
 		location.state?.data ||
 		props.articles.filter((art: any) => art.slug === slug)[0];
 	const author = article.author;
+	const token = localStorage.getItem('token');
+	const isMyPost = false;
 
 	return (
 		<>
@@ -86,24 +88,33 @@ function ArticlePage(props: Props) {
 								'dd MMMM yyyy',
 							)}
 						/>
-						<Button
-							href="#"
-							text="Edit"
-							small={true}
-							type="secondary"
-						/>
-						<Button
-							href="#"
-							text="Delete"
-							small={true}
-							type="warning"
-						/>
-						<Button
-							href="#"
-							text="Favorite article"
-							small={true}
-							type="primary"
-						/>
+						{token && (
+							<>
+								{isMyPost ? (
+									<>
+										<Button
+											href="#"
+											text="Edit"
+											small={true}
+											type="secondary"
+										/>
+										<Button
+											href="#"
+											text="Delete"
+											small={true}
+											type="warning"
+										/>
+									</>
+								) : (
+									<Button
+										href="#"
+										text="Favorite article"
+										small={true}
+										type="primary"
+									/>
+								)}
+							</>
+						)}
 					</div>
 				</div>
 			</main>

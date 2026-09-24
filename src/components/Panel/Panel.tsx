@@ -2,14 +2,19 @@ import './Panel.scss';
 import { Link } from 'react-router-dom';
 
 function Panel() {
-	const menu = [
-		{ name: 'Home', url: '/' },
-		{ name: 'New Post', url: '/new_post', icon: 'edit' },
-		{ name: 'Settings', url: '/settings', icon: 'settings' },
-		{ name: 'Profile', url: '/profile', icon: 'person' },
-		{ name: 'Sign In', url: '/sign_in' },
-		{ name: 'Sign Up', url: '/sign_up' },
-	];
+	const token = localStorage.getItem('token');
+	const menu = token
+		? [
+				{ name: 'Home', url: '/' },
+				{ name: 'New Post', url: '/new_post', icon: 'edit' },
+				{ name: 'Settings', url: '/settings', icon: 'settings' },
+				{ name: 'Profile', url: '/profile', icon: 'person' },
+			]
+		: [
+				{ name: 'Home', url: '/' },
+				{ name: 'Sign In', url: '/sign_in' },
+				{ name: 'Sign Up', url: '/sign_up' },
+			];
 
 	return (
 		<div className="panel">

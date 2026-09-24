@@ -25,6 +25,7 @@ const api = {
 	tags: '/tags',
 	users: '/users',
 	user: '/user',
+	login: '/login',
 };
 
 function App() {

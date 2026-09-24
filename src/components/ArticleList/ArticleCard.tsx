@@ -12,6 +12,7 @@ interface Props {
 }
 
 function ArticleCard(props: Props) {
+	const token = localStorage.getItem('token');
 	const [item, author, created] = [
 		props.item,
 		props.item.author,
@@ -25,13 +26,15 @@ function ArticleCard(props: Props) {
 					author={author.username}
 					date={format(parseISO(created), 'dd MMMM yyyy')}
 				/>
-				<Button
-					href="#"
-					text={item.favoritesCount}
-					small={true}
-					type="secondary"
-					icon="favorite"
-				/>
+				{token && (
+					<Button
+						href="#"
+						text={item.favoritesCount}
+						small={true}
+						type="secondary"
+						icon="favorite"
+					/>
+				)}
 			</div>
 			<div className="article-card__content">
 				<h2 className="article-card__title">
