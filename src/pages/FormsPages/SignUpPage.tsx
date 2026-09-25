@@ -47,7 +47,7 @@ function SignUpPage(props: Props) {
 	return (
 		<>
 			<header className="header">
-				<Panel />
+				<Panel api={props.api} />
 			</header>
 			<main className="main">
 				<form

@@ -12,7 +12,7 @@ function Badge(props: Props) {
 			<div className="material-icons badge__icon">person</div>
 			<div className="badge__person">
 				<div className="badge__name">
-					<Link to={props.author}>{props.author}</Link>
+					<Link to={`/profile/${props.author}`}>{props.author}</Link>
 				</div>
 				<div className="badge__date">{props.date}</div>
 			</div>

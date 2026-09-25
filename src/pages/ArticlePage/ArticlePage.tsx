@@ -53,7 +53,7 @@ function ArticlePage(props: Props) {
 	return (
 		<>
 			<header className="header">
-				<Panel />
+				<Panel api={props.api} />
 				<div className="article-head">
 					<div className="article-head-in main">
 						<h1 className="article-head__title">{article.title}</h1>

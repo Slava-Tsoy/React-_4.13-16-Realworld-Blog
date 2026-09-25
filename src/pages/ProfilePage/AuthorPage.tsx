@@ -1,8 +1,8 @@
 import './ProfilePage.scss';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { useAuth } from '../../Hooks/useAuth';
+import { useSearchParams, Link, useParams } from 'react-router-dom';
+import clsx from 'clsx';
 
 import Panel from '../../components/Panel';
 import Tabs from '../../components/Tabs';
@@ -34,9 +34,13 @@ function ProfilePage(props: Props) {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 
-	const fetch_user = props.api.url + props.api.user;
+	const { username } = useParams();
+	const fetch_author = props.api.url + props.api.profiles + `/${username}`;
+	const [author, setAuthor] = useState({ username: username });
 	const token = localStorage.getItem('token');
-	const [user, setUser] = useState(useAuth().user);
+
+	const [following, setFollowing] = useState(false);
+	const fetch_follow = `${fetch_author}/follow`;
 
 	useEffect(() => {
 		const control = new AbortController();
@@ -65,26 +69,26 @@ function ProfilePage(props: Props) {
 
 		getData(fetch_articles);
 
-		async function getCurrentUser(url: string) {
+		async function getAuthor(url: string) {
 			try {
 				const res = await fetch(url, {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json',
-						Authorization: `Token ${token}`,
 					},
 				});
-				const data = await res.json();
-				setUser(data.user);
+				const { profile } = await res.json();
+				setAuthor(profile);
+				setFollowing(profile.following);
 			} catch (error: any) {
 				console.error(error.message);
 			}
 		}
 
-		getCurrentUser(fetch_user);
+		getAuthor(fetch_author);
 
 		return () => control.abort();
-	}, [fetch_articles, fetch_user, token]);
+	}, [fetch_articles, fetch_author]);
 
 	if (loading) {
 		return <Preloader />;
@@ -94,6 +98,41 @@ function ProfilePage(props: Props) {
 		return <ErrorPage />;
 	}
 
+	async function handleFollow(e: any) {
+		e.preventDefault();
+
+		if (loading) {
+			return;
+		}
+
+		setLoading(true);
+
+		const method = following ? 'DELETE' : 'POST';
+
+		try {
+			const res = await fetch(fetch_follow, {
+				method: method,
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Token ${token}`,
+				},
+			});
+
+			if (res.ok) {
+				setFollowing(!following);
+			} else {
+				console.error('Server error when changing subscription status');
+			}
+
+			const { profile } = await res.json();
+			setAuthor(profile);
+		} catch (error: any) {
+			console.error('Network error:', error);
+		} finally {
+			setLoading(false);
+		}
+	}
+
 	return (
 		<>
 			<header className="header">
@@ -101,7 +140,28 @@ function ProfilePage(props: Props) {
 				<div className="profile">
 					<div className="profile-in main">
 						<div className="profile__avatar"></div>
-						<h2 className="profile__name">{user?.username}</h2>
+						<h2 className="profile__name">{author.username}</h2>
+						{token && (
+							<Link
+								to="#"
+								className={clsx(
+									'button',
+									(author as any).following
+										? 'button--warning'
+										: 'button--secondary',
+								)}
+								onClick={handleFollow}
+							>
+								<span className="material-icons button__icon">
+									favorite
+								</span>
+								<span className="button__text">
+									{(author as any).following
+										? 'Following'
+										: 'Follow'}
+								</span>
+							</Link>
+						)}
 					</div>
 				</div>
 			</header>

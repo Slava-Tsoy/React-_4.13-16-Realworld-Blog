@@ -72,7 +72,7 @@ function MainPage(props: Props) {
 	return (
 		<>
 			<header className="header">
-				<Panel />
+				<Panel api={props.api} />
 				<PageInfo />
 			</header>
 			<main className="main">

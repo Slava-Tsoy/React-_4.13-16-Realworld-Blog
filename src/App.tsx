@@ -9,6 +9,7 @@ import MainPage from './pages/MainPage';
 import ArticlePage from './pages/ArticlePage';
 import AllArticlesPage from './pages/AllArticlesPage';
 import ProfilePage from './pages/ProfilePage';
+import AuthorPage from './pages/ProfilePage/AuthorPage';
 import {
 	NewPostPage,
 	SettingsPage,
@@ -26,6 +27,7 @@ const api = {
 	users: '/users',
 	user: '/user',
 	login: '/login',
+	profiles: '/profiles',
 };
 
 function App() {
@@ -115,6 +117,17 @@ function App() {
 						path="/profile"
 						element={
 							<ProfilePage
+								api={api}
+								articles={articles}
+								articlesCount={articlesCount}
+								tags={tags}
+							/>
+						}
+					/>
+					<Route
+						path="/profile/:username"
+						element={
+							<AuthorPage
 								api={api}
 								articles={articles}
 								articlesCount={articlesCount}
