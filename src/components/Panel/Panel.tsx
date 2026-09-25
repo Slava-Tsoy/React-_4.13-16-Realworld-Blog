@@ -2,7 +2,7 @@ import './Panel.scss';
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../Hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 
 interface Props {
 	api: any;
