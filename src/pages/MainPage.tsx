@@ -78,6 +78,7 @@ function MainPage(props: Props) {
 			<main className="main">
 				<Block items={tags} tagsUrl={tagsUrl} />
 				<ArticleList
+					api={props.api}
 					items={items}
 					articlesUrl={articlesUrl}
 					tagsUrl={tagsUrl}

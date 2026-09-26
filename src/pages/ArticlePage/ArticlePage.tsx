@@ -50,6 +50,8 @@ function ArticlePage(props: Props) {
 	const token = localStorage.getItem('token');
 	const isMyPost = false;
 
+	function handleClick() {}
+
 	return (
 		<>
 			<header className="header">
@@ -97,12 +99,14 @@ function ArticlePage(props: Props) {
 											text="Edit"
 											small={true}
 											type="secondary"
+											onClick={handleClick}
 										/>
 										<Button
 											href="#"
 											text="Delete"
 											small={true}
 											type="warning"
+											onClick={handleClick}
 										/>
 									</>
 								) : (
@@ -111,6 +115,7 @@ function ArticlePage(props: Props) {
 										text="Favorite article"
 										small={true}
 										type="primary"
+										onClick={handleClick}
 									/>
 								)}
 							</>

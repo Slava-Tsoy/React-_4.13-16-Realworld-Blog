@@ -31,6 +31,7 @@ function ProfilePage(props: Props) {
 		props.api.url + articlesUrl + props.api.offset + currentOffset;
 
 	const [items, setItems] = useState(articles);
+	const [count, setCount] = useState(props.articlesCount);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 
@@ -53,6 +54,7 @@ function ProfilePage(props: Props) {
 					.then((res) => res.json())
 					.then((data) => {
 						setItems(data.articles);
+						setCount(data.articlesCount);
 					})
 					.catch((error) => {
 						console.error(error);
@@ -67,7 +69,7 @@ function ProfilePage(props: Props) {
 			}
 		}
 
-		getData(fetch_articles);
+		getData(fetch_articles + `&author=${author.username}`);
 
 		async function getAuthor(url: string) {
 			try {
@@ -88,7 +90,7 @@ function ProfilePage(props: Props) {
 		getAuthor(fetch_author);
 
 		return () => control.abort();
-	}, [fetch_articles, fetch_author]);
+	}, [author.username, fetch_articles, fetch_author]);
 
 	if (loading) {
 		return <Preloader />;
@@ -169,6 +171,7 @@ function ProfilePage(props: Props) {
 				<Tabs />
 				<Block items={tags} tagsUrl={tagsUrl} />
 				<ArticleList
+					api={props.api}
 					items={items}
 					articlesUrl={articlesUrl}
 					tagsUrl={tagsUrl}
@@ -176,7 +179,7 @@ function ProfilePage(props: Props) {
 				<Pagination
 					offset={props.api.offset}
 					amountPerPage={articles.length}
-					articlesCount={props.articlesCount}
+					articlesCount={count}
 					limit={5}
 				/>
 			</main>

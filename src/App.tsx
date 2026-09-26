@@ -28,6 +28,7 @@ const api = {
 	user: '/user',
 	login: '/login',
 	profiles: '/profiles',
+	favorite: '/favorite',
 };
 
 function App() {

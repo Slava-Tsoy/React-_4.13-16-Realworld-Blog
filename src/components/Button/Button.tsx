@@ -8,9 +8,15 @@ interface Props {
 	type: string;
 	icon?: string;
 	href?: string;
+	onClick: any;
 }
 
 function Button(props: Props) {
+	function handleClick(e: any) {
+		e.preventDefault();
+		props.onClick(e);
+	}
+
 	return (
 		<Link
 			to={props.href ? props.href : '#'}
@@ -19,6 +25,7 @@ function Button(props: Props) {
 				{ 'button--small': props.small },
 				'button--' + props.type,
 			)}
+			onClick={handleClick}
 		>
 			{props.icon && (
 				<span className="material-icons button__icon">

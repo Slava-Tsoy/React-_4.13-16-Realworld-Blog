@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 
@@ -6,6 +7,7 @@ import Badge from '../Badge';
 import Button from '../Button';
 
 interface Props {
+	api: any;
 	item: any;
 	itemUrl: string;
 	tagsUrl: string;
@@ -13,11 +15,46 @@ interface Props {
 
 function ArticleCard(props: Props) {
 	const token = localStorage.getItem('token');
-	const [item, author, created] = [
-		props.item,
-		props.item.author,
-		props.item.createdAt,
-	];
+	const [author, created] = [props.item.author, props.item.createdAt];
+	const [item, setItem] = useState(props.item);
+	const [favoritesCount, setFavoritesCount] = useState(item.favoritesCount);
+	const [favorite, setFavorite] = useState(false);
+	const fetch_favorite =
+		props.api.url +
+		props.api.articles +
+		`/${item.slug}` +
+		props.api.favorite;
+
+	async function toggleFavorite() {
+		const method =
+			!favorite && favoritesCount === 1
+				? 'DELETE'
+				: favorite
+					? 'DELETE'
+					: 'POST';
+
+		try {
+			const res = await fetch(fetch_favorite, {
+				method: method,
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Token ${token}`,
+				},
+			});
+
+			if (res.ok) {
+				setFavorite(!favorite);
+			} else {
+				console.error('Server error when changing subscription status');
+			}
+
+			const { article } = await res.json();
+			setFavoritesCount(article.favoritesCount);
+			setItem(article);
+		} catch (error) {
+			console.error('Network error:', error);
+		}
+	}
 
 	return (
 		<article className="article-card">
@@ -29,10 +66,11 @@ function ArticleCard(props: Props) {
 				{token && (
 					<Button
 						href="#"
-						text={item.favoritesCount}
+						text={favoritesCount}
 						small={true}
 						type="secondary"
 						icon="favorite"
+						onClick={toggleFavorite}
 					/>
 				)}
 			</div>

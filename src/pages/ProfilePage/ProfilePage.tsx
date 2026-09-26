@@ -109,6 +109,7 @@ function ProfilePage(props: Props) {
 				<Tabs />
 				<Block items={tags} tagsUrl={tagsUrl} />
 				<ArticleList
+					api={props.api}
 					items={items}
 					articlesUrl={articlesUrl}
 					tagsUrl={tagsUrl}
