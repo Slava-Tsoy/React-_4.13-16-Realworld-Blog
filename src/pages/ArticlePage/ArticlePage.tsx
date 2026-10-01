@@ -19,11 +19,12 @@ interface Props {
 }
 
 function ArticlePage(props: Props) {
+	const token = localStorage.getItem('token');
 	const { slug } = useParams();
 	const location = useLocation();
 	const [item, setItem] = useState({ article: {} });
 	const [loading, setLoading] = useState(true);
-	const fetch_url = props.api.url + props.api.articles + '/' + slug;
+	const fetch_url = props.api.url + props.api.articles + `/${slug}`;
 
 	useEffect(() => {
 		fetch(fetch_url)
@@ -47,15 +48,16 @@ function ArticlePage(props: Props) {
 		location.state?.data ||
 		props.articles.filter((art: any) => art.slug === slug)[0];
 	const author = article.author;
-	const token = localStorage.getItem('token');
 	const isMyPost = false;
+
+	async function toggleFavorite() {}
 
 	function handleClick() {}
 
 	return (
 		<>
 			<header className="header">
-				<Panel api={props.api} />
+				<Panel />
 				<div className="article-head">
 					<div className="article-head-in main">
 						<h1 className="article-head__title">{article.title}</h1>
@@ -112,10 +114,10 @@ function ArticlePage(props: Props) {
 								) : (
 									<Button
 										href="#"
-										text="Favorite article"
+										text={'Favorite article'}
 										small={true}
-										type="primary"
-										onClick={handleClick}
+										type={'primary'}
+										onClick={toggleFavorite}
 									/>
 								)}
 							</>

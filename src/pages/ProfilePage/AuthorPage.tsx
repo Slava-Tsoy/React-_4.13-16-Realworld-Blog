@@ -2,6 +2,7 @@ import './ProfilePage.scss';
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link, useParams } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import clsx from 'clsx';
 
 import Panel from '../../components/Panel';
@@ -21,97 +22,172 @@ interface Props {
 	tags: any;
 }
 
+const token = localStorage.getItem('token');
+
 function ProfilePage(props: Props) {
-	const [articles, articlesUrl] = [props.articles, props.api.articles];
-	const [tags, tagsUrl] = [props.tags, props.api.tags];
-
-	const [searchParams] = useSearchParams();
-	const currentOffset = searchParams.get('offset') || '0';
-	const fetch_articles =
-		props.api.url + articlesUrl + props.api.offset + currentOffset;
-
-	const [items, setItems] = useState(articles);
-	const [count, setCount] = useState(props.articlesCount);
-	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const [loading, setLoading] = useState(false);
 
+	const [items, setItems] = useState(props.articles);
+	const [itemsCount, setItemsCount] = useState(props.articlesCount);
+	const [searchParams] = useSearchParams();
+	const currentOffset = props.api.offset + (searchParams.get('offset') || '0');
+	const fetch_articles = props.api.url + props.api.articles + currentOffset;
+	
 	const { username } = useParams();
-	const fetch_author = props.api.url + props.api.profiles + `/${username}`;
 	const [author, setAuthor] = useState({ username: username });
-	const token = localStorage.getItem('token');
-
-	const [following, setFollowing] = useState(false);
-	const fetch_follow = `${fetch_author}/follow`;
+	const fetch_author = props.api.url + props.api.profiles + `/${username}`;
+	const fetch_author_articles = fetch_articles + `&author=${username}`;
+	
+	const { user } = useAuth();
+	const [currentUser, setCurrentUser] = useState(user);
+	const fetch_current_user = props.api.url + props.api.user;
 
 	useEffect(() => {
 		const control = new AbortController();
 
-		async function getData(url: string) {
+		async function getData(url: string, type?: string) {
 			try {
 				setLoading(true);
 
-				await fetch(url)
-					.then((res) => res.json())
-					.then((data) => {
-						setItems(data.articles);
-						setCount(data.articlesCount);
-					})
-					.catch((error) => {
-						console.error(error);
-						setLoading(false);
-					});
-			} catch (error: any) {
-				if (error.name !== 'AbortError') {
-					setError(error.message);
+				const res = await fetch(url, token ? {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Token ${token}`,
+					},
+					signal: control.signal,
+				} : {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					signal: control.signal,
+				});
+				const data = await res.json();
+
+				switch (type) {
+					case 'articles': {
+						const { articles, articlesCount } = data;
+						setItems(articles);
+						setItemsCount(articlesCount);
+						return data;
+					}
+					case 'author': {
+						const { profile } = data;
+						setAuthor(profile);
+						return data;
+					}
+					case 'currentUser': {
+						const { user } = data;
+						setCurrentUser(user);
+						return data;
+					}
+					default:
+						return data;
+				}
+			} catch (err: any) {
+				if (err.name !== 'AbortError') {
+					setError(err.message);
 				}
 			} finally {
 				setLoading(false);
 			}
 		}
 
-		getData(fetch_articles + `&author=${author.username}`);
-
-		async function getAuthor(url: string) {
-			try {
-				const res = await fetch(url, {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				});
-				const { profile } = await res.json();
-				setAuthor(profile);
-				setFollowing(profile.following);
-			} catch (error: any) {
-				console.error(error.message);
-			}
-		}
-
-		getAuthor(fetch_author);
+		getData(fetch_author_articles, 'articles');
+		getData(fetch_author, 'author');
+		getData(fetch_current_user, 'currentUser');
 
 		return () => control.abort();
-	}, [author.username, fetch_articles, fetch_author]);
+	}, [fetch_author, fetch_author_articles, fetch_current_user]);
 
-	if (loading) {
-		return <Preloader />;
+	function getIsFollowing() {
+		const value = localStorage.getItem('user');
+
+		if (value !== null) {
+			const localUser = JSON.parse(value);
+			
+			if (localUser.token === token) {
+				const [localAuthor] = localUser.following.filter((follow: any) => follow.username === username);
+				
+				return localAuthor ? localAuthor.following : false;
+			}
+		}
+		
+		return false;
 	}
 
-	if (error) {
-		return <ErrorPage />;
+	function getFollowing() {
+		const value = localStorage.getItem('user');
+		
+		if (value !== null) {
+			const localUser = JSON.parse(value);
+			
+			if (localUser.token === token) {
+				return localUser.following;
+			}
+		}
+		
+		return [];
 	}
 
-	async function handleFollow(e: any) {
-		e.preventDefault();
+	const [isFollowing, setIsFollowing] = useState(getIsFollowing());
+	const [following, setFollowing] = useState(getFollowing());
+	const fetch_follow = `${fetch_author}/follow`;
 
+	function addFollow(newFollow: any) {
+		setFollowing((followings: any) => {
+			const followExist = followings.some(
+				(follow: any) => follow.username === newFollow.username,
+			);
+
+			if (followExist) {
+				return followings.map((follow: any) => {
+					return follow.username === newFollow.username
+						? { ...follow, ...newFollow }
+						: follow;
+				});
+			} else {
+				return [...followings, newFollow];
+			}
+		});
+	}
+
+	function saveFollow(followings: any, newFollow: any) {
+		const followExist = followings.some(
+			(follow: any) => follow.username === newFollow.username
+		);
+
+		if (followExist) {
+			return followings.map((follow: any) => {
+				return follow.username === newFollow.username
+					? { ...follow, ...newFollow }
+					: follow;
+			});
+		} else {
+			return [...followings, newFollow];
+		}
+	}
+
+	function toLocalStorage(userData: any, author: any) {
+		const subscribes = saveFollow(following, author);
+		const { bio, image, ...user } = userData;
+		const updatedUser = { ...user, following: subscribes };
+
+		localStorage.setItem('user', JSON.stringify(updatedUser));
+	}
+
+	async function handleFollow() {
 		if (loading) {
 			return;
 		}
 
-		setLoading(true);
-
-		const method = following ? 'DELETE' : 'POST';
+		const method = isFollowing ? 'DELETE' : 'POST';
 
 		try {
+			setLoading(true);
+
 			const res = await fetch(fetch_follow, {
 				method: method,
 				headers: {
@@ -121,13 +197,16 @@ function ProfilePage(props: Props) {
 			});
 
 			if (res.ok) {
-				setFollowing(!following);
+				setIsFollowing(!isFollowing);
 			} else {
 				console.error('Server error when changing subscription status');
 			}
 
 			const { profile } = await res.json();
+
+			addFollow(profile);
 			setAuthor(profile);
+			toLocalStorage(currentUser, profile);
 		} catch (error: any) {
 			console.error('Network error:', error);
 		} finally {
@@ -135,10 +214,18 @@ function ProfilePage(props: Props) {
 		}
 	}
 
+	if (loading) {
+		return <Preloader />;
+	}
+
+	if (error) {
+		return <ErrorPage />;
+	}
+
 	return (
 		<>
 			<header className="header">
-				<Panel api={props.api} />
+				<Panel />
 				<div className="profile">
 					<div className="profile-in main">
 						<div className="profile__avatar"></div>
@@ -148,19 +235,20 @@ function ProfilePage(props: Props) {
 								to="#"
 								className={clsx(
 									'button',
-									(author as any).following
+									isFollowing
 										? 'button--warning'
 										: 'button--secondary',
 								)}
-								onClick={handleFollow}
+								onClick={(e: any) => {
+									e.preventDefault();
+									handleFollow();
+								}}
 							>
 								<span className="material-icons button__icon">
 									favorite
 								</span>
 								<span className="button__text">
-									{(author as any).following
-										? 'Following'
-										: 'Follow'}
+									{isFollowing ? 'Following' : 'Follow'}
 								</span>
 							</Link>
 						)}
@@ -169,17 +257,17 @@ function ProfilePage(props: Props) {
 			</header>
 			<main className="main">
 				<Tabs />
-				<Block items={tags} tagsUrl={tagsUrl} />
+				<Block items={props.tags} tagsUrl={props.api.tags} />
 				<ArticleList
 					api={props.api}
 					items={items}
-					articlesUrl={articlesUrl}
-					tagsUrl={tagsUrl}
+					articlesUrl={props.api.articles}
+					tagsUrl={props.api.tags}
 				/>
 				<Pagination
 					offset={props.api.offset}
-					amountPerPage={articles.length}
-					articlesCount={count}
+					amountPerPage={props.articles.length}
+					articlesCount={itemsCount}
 					limit={5}
 				/>
 			</main>

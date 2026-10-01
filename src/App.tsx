@@ -32,6 +32,7 @@ const api = {
 };
 
 function App() {
+	const token = localStorage.getItem('token');
 	const [articles, setArticles] = useState([]);
 	const [articlesCount, setArticlesCount] = useState(0);
 	const [tags, setTags] = useState([]);
@@ -74,7 +75,7 @@ function App() {
 		getData();
 
 		return () => control.abort();
-	}, []);
+	}, [token]);
 
 	if (loading) {
 		return <Preloader />;

@@ -3,7 +3,6 @@ import './Forms.scss';
 import clsx from 'clsx';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
 
 import Panel from '../../components/Panel';
 import Copyright from '../../components/Copyright';
@@ -13,7 +12,6 @@ interface Props {
 }
 
 function SignUpPage(props: Props) {
-	const { setUser } = useAuth();
 	const { register, handleSubmit, getValues, formState } = useForm({
 		mode: 'onChange',
 	});
@@ -37,7 +35,6 @@ function SignUpPage(props: Props) {
 
 			const { user } = await res.json();
 			localStorage.setItem('token', user.token);
-			setUser(user);
 			navigate('/');
 		} catch (error) {
 			console.error('Sending error:', error);
@@ -47,7 +44,7 @@ function SignUpPage(props: Props) {
 	return (
 		<>
 			<header className="header">
-				<Panel api={props.api} />
+				<Panel />
 			</header>
 			<main className="main">
 				<form

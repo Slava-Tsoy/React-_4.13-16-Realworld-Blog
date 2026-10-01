@@ -13,7 +13,7 @@ function Pagination(props: Props) {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const currentOffset = parseInt(searchParams.get('offset') || '0', 10);
 
-	if (props.articlesCount <= props.limit) {
+	if (props.articlesCount <= props.amountPerPage) {
 		return null;
 	}
 

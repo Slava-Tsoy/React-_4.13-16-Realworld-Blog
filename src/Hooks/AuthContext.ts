@@ -1,4 +1,4 @@
-import { createContext, type Dispatch, type SetStateAction } from 'react';
+import { createContext } from 'react';
 
 export interface User {
 	email: string;
@@ -7,8 +7,11 @@ export interface User {
 }
 
 interface AuthContextType {
-	user: User | null;
-	setUser: Dispatch<SetStateAction<User | null>>;
+	user: User | any;
+	login: any;
+	logout: any;
+	loading: boolean;
+	error: any;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);

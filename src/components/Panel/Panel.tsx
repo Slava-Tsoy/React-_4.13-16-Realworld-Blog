@@ -1,41 +1,11 @@
 import './Panel.scss';
 
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
-interface Props {
-	api: any;
-}
-
-function Panel(props: Props) {
-	const [user, setUser] = useState(useAuth().user);
-	const fetch_url = props.api.url + props.api.user;
+function Panel() {
 	const token = localStorage.getItem('token');
-
-	useEffect(() => {
-		const control = new AbortController();
-
-		async function getCurrentUser(url: string) {
-			try {
-				const res = await fetch(url, {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Token ${token}`,
-					},
-				});
-				const data = await res.json();
-				setUser(data.user);
-			} catch (error: any) {
-				console.error(error.message);
-			}
-		}
-
-		getCurrentUser(fetch_url);
-
-		return () => control.abort();
-	}, [fetch_url, token]);
+	const { user } = useAuth();
 
 	const menu = token
 		? [

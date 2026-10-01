@@ -17,43 +17,9 @@ function ArticleCard(props: Props) {
 	const token = localStorage.getItem('token');
 	const [author, created] = [props.item.author, props.item.createdAt];
 	const [item, setItem] = useState(props.item);
-	const [favoritesCount, setFavoritesCount] = useState(item.favoritesCount);
-	const [favorite, setFavorite] = useState(false);
-	const fetch_favorite =
-		props.api.url +
-		props.api.articles +
-		`/${item.slug}` +
-		props.api.favorite;
 
 	async function toggleFavorite() {
-		const method =
-			!favorite && favoritesCount === 1
-				? 'DELETE'
-				: favorite
-					? 'DELETE'
-					: 'POST';
-
-		try {
-			const res = await fetch(fetch_favorite, {
-				method: method,
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Token ${token}`,
-				},
-			});
-
-			if (res.ok) {
-				setFavorite(!favorite);
-			} else {
-				console.error('Server error when changing subscription status');
-			}
-
-			const { article } = await res.json();
-			setFavoritesCount(article.favoritesCount);
-			setItem(article);
-		} catch (error) {
-			console.error('Network error:', error);
-		}
+		setItem(props.item);
 	}
 
 	return (
@@ -66,7 +32,7 @@ function ArticleCard(props: Props) {
 				{token && (
 					<Button
 						href="#"
-						text={favoritesCount}
+						text={item.favoritesCount}
 						small={true}
 						type="secondary"
 						icon="favorite"

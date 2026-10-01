@@ -71,7 +71,7 @@ function AllArticlesPage(props: Props) {
 	return (
 		<>
 			<header className="header">
-				<Panel api={props.api} />
+				<Panel />
 			</header>
 			<main className="main">
 				<Block items={tags} tagsUrl={tagsUrl} />

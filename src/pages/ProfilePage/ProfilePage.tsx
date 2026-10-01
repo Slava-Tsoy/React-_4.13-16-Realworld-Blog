@@ -97,7 +97,7 @@ function ProfilePage(props: Props) {
 	return (
 		<>
 			<header className="header">
-				<Panel api={props.api} />
+				<Panel />
 				<div className="profile">
 					<div className="profile-in main">
 						<div className="profile__avatar"></div>
