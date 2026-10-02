@@ -32,37 +32,49 @@ const api = {
 };
 
 function App() {
-	const token = localStorage.getItem('token');
+	const [error, setError] = useState(null);
+	const [loading, setLoading] = useState(false);
+
 	const [articles, setArticles] = useState([]);
 	const [articlesCount, setArticlesCount] = useState(0);
 	const [tags, setTags] = useState([]);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(null);
 
 	useEffect(() => {
 		const control = new AbortController();
 
-		async function getData() {
+		async function getData(url: string, type?: string) {
 			try {
 				setLoading(true);
 
-				const [articlesRes, tagsRes] = await Promise.all([
-					fetch(api.url + api.articles, { signal: control.signal }),
-					fetch(api.url + api.tags, { signal: control.signal }),
-				]);
+				const res = await fetch(url, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					signal: control.signal,
+				});
 
-				if (!articlesRes.ok || !tagsRes.ok) {
+				if (!res.ok) {
 					throw new Error('Failed to load data from the server');
 				}
 
-				const [articlesData, tagsData] = await Promise.all([
-					articlesRes.json(),
-					tagsRes.json(),
-				]);
+				const data = await res.json();
 
-				setArticles(articlesData.articles);
-				setArticlesCount(articlesData.articlesCount);
-				setTags(tagsData.tags);
+				switch (type) {
+					case 'articles': {
+						const { articles, articlesCount } = data;
+						setArticles(articles);
+						setArticlesCount(articlesCount);
+						break;
+					}
+					case 'tags': {
+						const { tags } = data;
+						setTags(tags);
+						break;
+					}
+					default:
+						return data;
+				}
 			} catch (error: any) {
 				if (error.name !== 'AbortError') {
 					setError(error.message);
@@ -72,10 +84,11 @@ function App() {
 			}
 		}
 
-		getData();
+		getData(`${api.url + api.articles}`, 'articles');
+		getData(`${api.url + api.tags}`, 'tags');
 
 		return () => control.abort();
-	}, [token]);
+	}, []);
 
 	if (loading) {
 		return <Preloader />;

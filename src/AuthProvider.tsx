@@ -26,6 +26,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 					},
 					signal: control.signal,
 				});
+
+				if (res.status === 401) {
+					setUser(null);
+					localStorage.removeItem('token');
+					window.location.href = '/';
+					return;
+				}
+
+				if (!res.ok) {
+					throw new Error('Failed to load data from the server');
+				}
+
 				const { user } = await res.json();
 				setUser(user);
 			} catch (err: any) {
