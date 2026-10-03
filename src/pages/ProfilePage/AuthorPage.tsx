@@ -6,7 +6,6 @@ import { useAuth } from '../../hooks/useAuth';
 import clsx from 'clsx';
 
 import Panel from '../../components/Panel';
-// import Tabs from '../../components/Tabs';
 import Block from '../../components/Block';
 import ArticleList from '../../components/ArticleList';
 import Pagination from '../../components/Pagination';
@@ -31,19 +30,18 @@ function ProfilePage(props: Props) {
 	const [items, setItems] = useState(props.articles);
 	const [itemsCount, setItemsCount] = useState(props.articlesCount);
 	const [searchParams] = useSearchParams();
-	const currentOffset =
-		props.api.offset + (searchParams.get('offset') || '0');
-	const fetch_articles = props.api.url + props.api.articles + currentOffset;
+	const currentOffset = searchParams.get('offset') || '0';
+	const fetch_articles =
+		props.api.url + props.api.articles + `?offset=${currentOffset}`;
 
-	const { username } = useParams();
-	const [author, setAuthor] = useState({ username: username });
-	const fetch_author = props.api.url + props.api.profiles + `/${username}`;
-	const fetch_author_articles = fetch_articles + `&author=${username}`;
+	const [currentAuthor, setCurrentAuthor] = useState(useParams());
+	const fetch_author =
+		props.api.url + props.api.profiles + `/${currentAuthor.username}`;
+	const fetch_author_articles =
+		fetch_articles + `&author=${currentAuthor.username}`;
 
 	const { user } = useAuth();
 	const [currentUser, setCurrentUser] = useState(user);
-	const fetch_current_user = props.api.url + props.api.user;
-
 	const [isFollowing, setIsFollowing] = useState(getIsFollowing());
 	const [following, setFollowing] = useState(getFollowing());
 	const fetch_follow = `${fetch_author}/follow`;
@@ -79,7 +77,8 @@ function ProfilePage(props: Props) {
 					}
 					case 'author': {
 						const { profile } = data;
-						setAuthor(profile);
+						const { bio, image, ...author } = profile;
+						setCurrentAuthor(author);
 						return data;
 					}
 					case 'currentUser': {
@@ -101,47 +100,37 @@ function ProfilePage(props: Props) {
 
 		getData(fetch_author_articles, 'articles');
 		getData(fetch_author, 'author');
-		getData(fetch_current_user, 'currentUser');
 
 		return () => control.abort();
-	}, [fetch_author, fetch_author_articles, fetch_current_user]);
+	}, [fetch_author, fetch_author_articles]);
 
 	function getIsFollowing() {
-		const value: any = localStorage.getItem('user');
-		const localUser = JSON.parse(value);
-		const [localAuthor] = localUser.following.filter((e: any) => {
-			return e.username === username;
-		});
+		const value: any = localStorage.getItem(currentUser?.username);
+		const localUser: any = JSON.parse(value);
 
-		return localAuthor ? localAuthor?.following : false;
+		if (localUser && localUser.following) {
+			const [localAuthor] = localUser.following.filter((e: any) => {
+				return e.username === currentAuthor.username;
+			});
+
+			return localAuthor ? localAuthor?.following : false;
+		}
+
+		return false;
 	}
 
 	function getFollowing() {
-		const value: any = localStorage.getItem('user');
-		const localUser = JSON.parse(value);
+		const value: any = localStorage.getItem(currentUser?.username);
+		const localUser: any = JSON.parse(value);
 
-		return localUser ? localUser?.following : [];
+		if (localUser && localUser.following) {
+			return localUser.following;
+		}
+
+		return [];
 	}
 
-	function addFollow(newFollow: any) {
-		setFollowing((followings: any) => {
-			const followExist = followings.some(
-				(follow: any) => follow.username === newFollow.username,
-			);
-
-			if (followExist) {
-				return followings.map((follow: any) => {
-					return follow.username === newFollow.username
-						? { ...follow, ...newFollow }
-						: follow;
-				});
-			} else {
-				return [...followings, newFollow];
-			}
-		});
-	}
-
-	function saveFollow(followings: any, newFollow: any) {
+	function getSaveFollowing(followings: any, newFollow: any) {
 		const followExist = followings.some(
 			(follow: any) => follow.username === newFollow.username,
 		);
@@ -157,12 +146,16 @@ function ProfilePage(props: Props) {
 		}
 	}
 
-	function toLocalStorage(userData: any, author: any) {
-		const subscribes = saveFollow(following, author);
-		const { bio, image, token, ...user } = userData;
+	function toLocalStorage(user: any, author: any) {
+		const subscribes = getSaveFollowing(following, author);
 		const updatedUser = { ...user, following: subscribes };
 
-		localStorage.setItem('user', JSON.stringify(updatedUser));
+		setFollowing(subscribes);
+
+		localStorage.setItem(
+			currentUser?.username,
+			JSON.stringify(updatedUser),
+		);
 	}
 
 	async function handleFollow() {
@@ -190,10 +183,11 @@ function ProfilePage(props: Props) {
 			}
 
 			const { profile } = await res.json();
+			const { bio, image, ...author } = profile;
 
-			addFollow(profile);
-			setAuthor(profile);
-			toLocalStorage(currentUser, profile);
+			// addFollow(author);
+			setCurrentAuthor(author);
+			toLocalStorage(currentUser, author);
 		} catch (error: any) {
 			console.error('Network error:', error);
 		} finally {
@@ -216,7 +210,9 @@ function ProfilePage(props: Props) {
 				<div className="profile">
 					<div className="profile-in main">
 						<div className="profile__avatar"></div>
-						<h2 className="profile__name">{author.username}</h2>
+						<h2 className="profile__name">
+							{currentAuthor.username}
+						</h2>
 						{token && (
 							<Link
 								to="#"
@@ -243,7 +239,6 @@ function ProfilePage(props: Props) {
 				</div>
 			</header>
 			<main className="main">
-				{/* <Tabs /> */}
 				<Block items={props.tags} tagsUrl={props.api.tags} />
 				<ArticleList
 					api={props.api}
@@ -255,7 +250,7 @@ function ProfilePage(props: Props) {
 					offset={props.api.offset}
 					amountPerPage={props.articles.length}
 					articlesCount={itemsCount}
-					limit={5}
+					range={5}
 				/>
 			</main>
 			<footer className="footer">

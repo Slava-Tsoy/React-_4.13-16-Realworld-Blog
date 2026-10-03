@@ -87,7 +87,7 @@ function MainPage(props: Props) {
 					offset={props.api.offset}
 					amountPerPage={articles.length}
 					articlesCount={props.articlesCount}
-					limit={5}
+					range={5}
 				/>
 			</main>
 			<footer className="footer">

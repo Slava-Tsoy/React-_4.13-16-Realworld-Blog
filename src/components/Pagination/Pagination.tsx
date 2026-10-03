@@ -6,7 +6,7 @@ interface Props {
 	offset: string;
 	amountPerPage: number;
 	articlesCount: number;
-	limit: number;
+	range: number;
 }
 
 function Pagination(props: Props) {
@@ -39,9 +39,10 @@ function Pagination(props: Props) {
 	const totalPages = Math.ceil(props.articlesCount / props.amountPerPage);
 
 	const getPagesRange = () => {
+		const pagesRange = [...Array(props.range).keys()].map((i) => i + 1);
 		const range: any = [];
 
-		if (totalPages <= props.limit) {
+		if (totalPages <= props.range) {
 			for (let i = 1; i <= totalPages; i++) {
 				range.push(i);
 			}
@@ -49,15 +50,15 @@ function Pagination(props: Props) {
 			return range;
 		}
 
-		if (currentPage <= props.limit) {
-			for (let i = 1; i <= props.limit; i++) {
+		if (currentPage <= props.range) {
+			for (let i = 1; i <= props.range; i++) {
 				range.push(i);
 			}
 
 			range.push('...');
 			range.push(totalPages);
 		} else {
-			range.push(1, 2, 3, 4, 5, '...');
+			range.push(...pagesRange, '...');
 
 			if (currentPage < totalPages) {
 				range.push(currentPage);

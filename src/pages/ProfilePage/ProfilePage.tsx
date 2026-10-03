@@ -124,7 +124,7 @@ function ProfilePage(props: Props) {
 					offset={props.api.offset}
 					amountPerPage={props.articles.length}
 					articlesCount={itemsCount}
-					limit={5}
+					range={5}
 				/>
 			</main>
 			<footer className="footer">
