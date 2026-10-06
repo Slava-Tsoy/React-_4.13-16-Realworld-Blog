@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		for (let i = 0; i < localStorage.length; i++) {
 			const key = localStorage.key(i);
 
-			if (key && key !== 'token') {
+			if (key && key !== 'token' && key !== 'undefined') {
 				try {
 					const data = JSON.parse(localStorage.getItem(key) || '');
 

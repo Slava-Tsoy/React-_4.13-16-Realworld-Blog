@@ -9,21 +9,20 @@ interface Props {
 }
 
 function ArticleList(props: Props) {
-	const [items, itemsUrl, tagsUrl] = [
-		props.items,
-		props.articlesUrl,
-		props.tagsUrl,
-	];
+	const { api, items, articlesUrl, tagsUrl } = props;
+
+	function addToFavorites(article: any) {}
 
 	return (
 		<section className="article-list">
 			{items.map((e: any, key: number) => (
 				<ArticleCard
-					api={props.api}
+					api={api}
 					key={key}
 					item={e}
-					itemUrl={itemsUrl}
+					itemUrl={articlesUrl}
 					tagsUrl={tagsUrl}
+					addToFavorites={addToFavorites}
 				/>
 			))}
 		</section>

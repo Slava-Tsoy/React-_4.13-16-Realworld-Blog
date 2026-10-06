@@ -21,9 +21,9 @@ interface Props {
 	tags: any;
 }
 
-const token = localStorage.getItem('token');
-
 function ProfilePage(props: Props) {
+	const token = localStorage.getItem('token');
+
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(false);
 
@@ -102,11 +102,11 @@ function ProfilePage(props: Props) {
 		getData(fetch_author, 'author');
 
 		return () => control.abort();
-	}, [fetch_author, fetch_author_articles]);
+	}, [fetch_author, fetch_author_articles, token]);
 
 	function getIsFollowing() {
 		const value: any = localStorage.getItem(currentUser?.username);
-		const localUser: any = JSON.parse(value);
+		const localUser = JSON.parse(value);
 
 		if (localUser && localUser.following) {
 			const [localAuthor] = localUser.following.filter((e: any) => {
@@ -121,7 +121,7 @@ function ProfilePage(props: Props) {
 
 	function getFollowing() {
 		const value: any = localStorage.getItem(currentUser?.username);
-		const localUser: any = JSON.parse(value);
+		const localUser = JSON.parse(value);
 
 		if (localUser && localUser.following) {
 			return localUser.following;
@@ -185,7 +185,6 @@ function ProfilePage(props: Props) {
 			const { profile } = await res.json();
 			const { bio, image, ...author } = profile;
 
-			// addFollow(author);
 			setCurrentAuthor(author);
 			toLocalStorage(currentUser, author);
 		} catch (error: any) {

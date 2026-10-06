@@ -23,7 +23,7 @@ function Button(props: Props) {
 			className={clsx(
 				'button',
 				{ 'button--small': props.small },
-				'button--' + props.type,
+				`button--${props.type}`,
 			)}
 			onClick={handleClick}
 		>

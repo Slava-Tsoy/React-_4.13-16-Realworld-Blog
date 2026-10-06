@@ -11,15 +11,47 @@ interface Props {
 	item: any;
 	itemUrl: string;
 	tagsUrl: string;
+	addToFavorites: any;
 }
 
 function ArticleCard(props: Props) {
 	const token = localStorage.getItem('token');
-	const [author, created] = [props.item.author, props.item.createdAt];
-	const [item, setItem] = useState(props.item);
 
-	async function toggleFavorite() {
-		setItem(props.item);
+	const { api, item, itemUrl, tagsUrl, addToFavorites } = props;
+	const { author, createdAt, slug } = item;
+
+	const [isFavorited, setIsFavorited] = useState(item.favorited);
+	const [favoritesCount, setFavoritesCount] = useState(item.favoritesCount);
+	const fetch_favorite = `${api.url + api.articles}/${slug}/favorite`;
+
+	async function handleFavorite() {
+		const method = isFavorited ? 'DELETE' : 'POST';
+
+		try {
+			const res = await fetch(fetch_favorite, {
+				method: method,
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Token ${token}`,
+				},
+			});
+
+			if (res.ok) {
+				setIsFavorited(!isFavorited);
+			} else {
+				console.error('Server error when changing favorite status');
+			}
+
+			const { article } = await res.json();
+			const { slug, favorited, favoritesCount } = article;
+			const favorite_article = { slug, favorited, favoritesCount };
+
+			setIsFavorited(favorited);
+			setFavoritesCount(favoritesCount);
+			addToFavorites(favorite_article);
+		} catch (error: any) {
+			console.error('Network error:', error);
+		}
 	}
 
 	return (
@@ -27,32 +59,29 @@ function ArticleCard(props: Props) {
 			<div className="article-card-head">
 				<Badge
 					author={author.username}
-					date={format(parseISO(created), 'dd MMMM yyyy')}
+					date={format(parseISO(createdAt), 'dd MMMM yyyy')}
 				/>
 				{token && (
 					<Button
 						href="#"
-						text={item.favoritesCount}
+						text={favoritesCount}
 						small={true}
-						type="secondary"
+						type={isFavorited ? 'warning' : 'secondary'}
 						icon="favorite"
-						onClick={toggleFavorite}
+						onClick={handleFavorite}
 					/>
 				)}
 			</div>
 			<div className="article-card__content">
 				<h2 className="article-card__title">
-					<Link
-						to={props.itemUrl + '/' + item.slug}
-						state={{ data: item }}
-					>
+					<Link to={`${itemUrl}/${slug}`} state={{ data: item }}>
 						{item.title}
 					</Link>
 				</h2>
 				<div className="article-card__text">{item.description}</div>
 			</div>
 			{item.tagList.length !== 0 && (
-				<Tags items={item.tagList} tagsUrl={props.tagsUrl} />
+				<Tags items={item.tagList} tagsUrl={tagsUrl} />
 			)}
 		</article>
 	);
