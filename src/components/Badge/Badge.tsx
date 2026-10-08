@@ -1,5 +1,4 @@
 import './Badge.scss';
-import { Link } from 'react-router-dom';
 
 interface Props {
 	author: string;
@@ -12,7 +11,7 @@ function Badge(props: Props) {
 			<div className="material-icons badge__icon">person</div>
 			<div className="badge__person">
 				<div className="badge__name">
-					<Link to={`/profile/${props.author}`}>{props.author}</Link>
+					<a href={`/profile/${props.author}`}>{props.author}</a>
 				</div>
 				<div className="badge__date">{props.date}</div>
 			</div>

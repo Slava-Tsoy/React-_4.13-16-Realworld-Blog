@@ -12,22 +12,28 @@ interface Props {
 	itemUrl: string;
 	tagsUrl: string;
 	addToFavorites: any;
+	favorited: any;
+	favoritesCount: any;
 }
 
 function ArticleCard(props: Props) {
 	const token = localStorage.getItem('token');
 
+	const [loading, setLoading] = useState(false);
+
 	const { api, item, itemUrl, tagsUrl, addToFavorites } = props;
 	const { author, createdAt, slug } = item;
 
-	const [isFavorited, setIsFavorited] = useState(item.favorited);
-	const [favoritesCount, setFavoritesCount] = useState(item.favoritesCount);
+	const [isFavorited, setIsFavorited] = useState(props.favorited);
+	const [favoritesCount, setFavoritesCount] = useState(props.favoritesCount);
 	const fetch_favorite = `${api.url + api.articles}/${slug}/favorite`;
 
 	async function handleFavorite() {
 		const method = isFavorited ? 'DELETE' : 'POST';
 
 		try {
+			setLoading(true);
+
 			const res = await fetch(fetch_favorite, {
 				method: method,
 				headers: {
@@ -51,6 +57,8 @@ function ArticleCard(props: Props) {
 			addToFavorites(favorite_article);
 		} catch (error: any) {
 			console.error('Network error:', error);
+		} finally {
+			setLoading(false);
 		}
 	}
 
@@ -64,7 +72,7 @@ function ArticleCard(props: Props) {
 				{token && (
 					<Button
 						href="#"
-						text={favoritesCount}
+						text={loading ? '...' : favoritesCount}
 						small={true}
 						type={isFavorited ? 'warning' : 'secondary'}
 						icon="favorite"
