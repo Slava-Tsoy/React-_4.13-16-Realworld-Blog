@@ -89,7 +89,7 @@ function ArticleCard(props: Props) {
 				<div className="article-card__text">{item.description}</div>
 			</div>
 			{item.tagList.length !== 0 && (
-				<Tags items={item.tagList} tagsUrl={tagsUrl} />
+				<Tags api={api} items={item.tagList} tagsUrl={tagsUrl} />
 			)}
 		</article>
 	);

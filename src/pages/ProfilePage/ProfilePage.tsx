@@ -113,7 +113,7 @@ function ProfilePage(props: Props) {
 			</header>
 			<main className="main">
 				<Tabs />
-				<Block items={props.tags} tagsUrl={props.api.tags} />
+				<Block api={props.api} items={props.tags} tagsUrl={props.api.tags} />
 				<ArticleList
 					api={props.api}
 					items={items}

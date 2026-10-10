@@ -21,6 +21,15 @@
 
 	&__description {
 		line-height: normal;
+
+		pre {
+			white-space: normal;
+		}
+
+		code {
+			font-family: inherit;
+			font-size: inherit;
+		}
 	}
 
 	&-widgets {

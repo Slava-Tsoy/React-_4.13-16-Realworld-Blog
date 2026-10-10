@@ -18,34 +18,38 @@ interface Props {
 }
 
 function AllArticlesPage(props: Props) {
-	const [articles, articlesUrl] = [props.articles, props.api.articles];
-	const [tags, tagsUrl] = [props.tags, props.api.tags];
-
-	const [searchParams] = useSearchParams();
-	const currentOffset = searchParams.get('offset') || '0';
-	const fetchUrl =
-		props.api.url + articlesUrl + props.api.offset + currentOffset;
-
-	const [items, setItems] = useState(articles);
-	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const [loading, setLoading] = useState(false);
+	
+	const [searchParams] = useSearchParams();
+	const currentOffset = parseInt(searchParams.get('offset') || '0');
+	const currentTag = searchParams.get('tag');
+	const offsetParam = `?offset=${currentOffset}`;
+	const tagParam = !currentTag ? '' : `&tag=${currentTag}`;
+
+	const [items, setItems] = useState(props.articles);
+	const [itemsCount, setItemsCount] = useState(props.articlesCount);
+	const fetch_articles = props.api.url + props.api.articles + offsetParam + tagParam;
 
 	useEffect(() => {
 		const control = new AbortController();
 
-		async function getData() {
+		async function getData(url: string) {
 			try {
 				setLoading(true);
 
-				await fetch(fetchUrl)
-					.then((res) => res.json())
-					.then((data) => {
-						setItems(data.articles);
-					})
-					.catch((error) => {
-						console.error(error);
-						setLoading(false);
-					});
+				const res = await fetch(url, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					signal: control.signal,
+				});
+				const data = await res.json();
+				const { articles, articlesCount } = data;
+				
+				setItems(articles);
+				setItemsCount(articlesCount);
 			} catch (error: any) {
 				if (error.name !== 'AbortError') {
 					setError(error.message);
@@ -55,10 +59,10 @@ function AllArticlesPage(props: Props) {
 			}
 		}
 
-		getData();
+		getData(fetch_articles);
 
 		return () => control.abort();
-	}, [fetchUrl]);
+	}, [fetch_articles]);
 
 	if (loading) {
 		return <Preloader />;
@@ -74,17 +78,17 @@ function AllArticlesPage(props: Props) {
 				<Panel />
 			</header>
 			<main className="main">
-				<Block items={tags} tagsUrl={tagsUrl} />
+				<Block api={props.api} items={props.tags} tagsUrl={props.api.tags} />
 				<ArticleList
 					api={props.api}
 					items={items}
-					articlesUrl={articlesUrl}
-					tagsUrl={tagsUrl}
+					articlesUrl={props.api.articles}
+					tagsUrl={props.api.tags}
 				/>
 				<Pagination
 					offset={props.api.offset}
-					amountPerPage={articles.length}
-					articlesCount={props.articlesCount}
+					amountPerPage={props.articles.length}
+					articlesCount={itemsCount}
 					range={5}
 				/>
 			</main>

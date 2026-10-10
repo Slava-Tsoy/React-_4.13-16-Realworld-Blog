@@ -130,23 +130,23 @@ function ProfilePage(props: Props) {
 		return [];
 	}
 
-	function getSaveFollowing(followings: any, newFollow: any) {
-		const followExist = followings.some(
-			(follow: any) => follow.username === newFollow.username,
-		);
+	function getSaveFollowing(items: any, newItem: any) {
+		const itemExist = items.some((item: any) => {
+			return item.username === newItem.username;
+		});
 
-		if (followExist) {
-			return followings.map((follow: any) => {
-				return follow.username === newFollow.username
-					? { ...follow, ...newFollow }
-					: follow;
+		if (itemExist) {
+			return items.map((item: any) => {
+				return item.username === newItem.username
+					? { ...item, ...newItem }
+					: item;
 			});
 		} else {
-			return [...followings, newFollow];
+			return [...items, newItem];
 		}
 	}
 
-	function toLocalStorage(user: any, author: any) {
+	function addToFollowing(user: any, author: any) {
 		const subscribes = getSaveFollowing(following, author);
 		const updatedUser = { ...user, following: subscribes };
 
@@ -186,7 +186,7 @@ function ProfilePage(props: Props) {
 			const { bio, image, ...author } = profile;
 
 			setCurrentAuthor(author);
-			toLocalStorage(currentUser, author);
+			addToFollowing(currentUser, author);
 		} catch (error: any) {
 			console.error('Network error:', error);
 		} finally {
@@ -238,7 +238,7 @@ function ProfilePage(props: Props) {
 				</div>
 			</header>
 			<main className="main">
-				<Block items={props.tags} tagsUrl={props.api.tags} />
+				<Block api={props.api} items={props.tags} tagsUrl={props.api.tags} />
 				<ArticleList
 					api={props.api}
 					items={items}

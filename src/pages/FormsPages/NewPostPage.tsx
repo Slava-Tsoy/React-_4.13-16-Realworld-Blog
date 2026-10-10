@@ -34,7 +34,7 @@ function NewPostPage(props: Props) {
 								placeholder="Input your text"
 							></textarea>
 						</div>
-						<Tags items={props.tags} tagsUrl={props.api.tags} />
+						<Tags api={props.api} items={props.tags} tagsUrl={props.api.tags} />
 						<div className="form__button">
 							<button type="submit">Publish Article</button>
 						</div>

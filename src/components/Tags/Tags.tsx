@@ -1,20 +1,24 @@
 import './Tags.scss';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 interface Props {
+	api: any,
 	items: any;
-	limit?: number;
 	tagsUrl: string;
 }
 
-function Tags({ items, limit = 20, tagsUrl }: Props) {
+function Tags(props: Props) {
+	const { api, items } = props;
+	const [searchParams] = useSearchParams();
+	const currentOffset = searchParams.get('offset') || '0';
+	const uri = `${api.articles}?offset=${currentOffset}`;
+	
 	return (
 		<ul className="tags">
-			{items.slice(0, limit).map((e: any, key: number) => (
-				// .slice(0, limit) для ограничения
+			{items.map((e: any, key: number) => (
 				<li className="tags__item" key={key}>
 					<Link
-						to={tagsUrl + '/' + e.toLowerCase()}
+						to={`${uri}&tag=${e}`}
 						className="tags__link"
 					>
 						{e}

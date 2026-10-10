@@ -80,6 +80,7 @@ function ArticlePage(props: Props) {
 					</div>
 					{article.tagList.length !== 0 && (
 						<Tags
+							api={props.api}
 							items={article.tagList}
 							tagsUrl={props.api.tags}
 						/>

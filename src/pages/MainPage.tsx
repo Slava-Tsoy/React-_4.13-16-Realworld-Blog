@@ -76,7 +76,7 @@ function MainPage(props: Props) {
 				<PageInfo />
 			</header>
 			<main className="main">
-				<Block items={tags} tagsUrl={tagsUrl} />
+				<Block api={props.api} items={tags} tagsUrl={tagsUrl} />
 				<ArticleList
 					api={props.api}
 					items={items}
