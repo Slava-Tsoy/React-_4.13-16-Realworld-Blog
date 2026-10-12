@@ -25,7 +25,7 @@ function ArticleList(props: Props) {
 	}
 
 	function getFavorites() {
-		const value: any = localStorage.getItem(user.username);
+		const value: any = localStorage.getItem(user?.username);
 		const localUser = JSON.parse(value);
 
 		if (localUser && localUser.favorites) {
@@ -53,12 +53,12 @@ function ArticleList(props: Props) {
 
 	function addToFavorites(article: any) {
 		const favorite_list = getSaveFavorites(favorites, article);
-		const localUser = getLocalUser(user.username);
+		const localUser = getLocalUser(user?.username);
 		const updatedUser = { ...localUser, favorites: favorite_list };
 
 		setFavorites(favorite_list);
 
-		localStorage.setItem(user.username, JSON.stringify(updatedUser));
+		localStorage.setItem(user?.username, JSON.stringify(updatedUser));
 	}
 
 	function setFavoriteState(items: any, slug: string, flag?: string) {
