@@ -21,9 +21,9 @@ interface Props {
 	tags: any;
 }
 
-const token = localStorage.getItem('token');
-
 function ProfilePage(props: Props) {
+	const token = localStorage.getItem('token');
+
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(false);
 
@@ -37,6 +37,21 @@ function ProfilePage(props: Props) {
 	const { user } = useAuth();
 	const [currentUser, setCurrentUser] = useState(user);
 	const fetch_current_user = props.api.url + props.api.user;
+
+	const tabItems = [
+		{
+			name: 'Favorites',
+			uri: `${fetch_articles}&favorited=${user.username}`,
+			active: true,
+		},
+		{
+			name: 'My posts',
+			uri: `${fetch_articles}&author=${user.username}`,
+			active: false,
+		},
+	];
+
+	const fetch_favorited_articles = `${fetch_articles}&favorited=${user.username}`;
 
 	useEffect(() => {
 		const control = new AbortController();
@@ -84,11 +99,11 @@ function ProfilePage(props: Props) {
 			}
 		}
 
-		getData(fetch_articles, 'articles');
+		getData(fetch_favorited_articles, 'articles');
 		getData(fetch_current_user, 'currentUser');
 
 		return () => control.abort();
-	}, [fetch_articles, fetch_current_user]);
+	}, [fetch_current_user, fetch_favorited_articles, token]);
 
 	if (loading) {
 		return <Preloader />;
@@ -112,8 +127,12 @@ function ProfilePage(props: Props) {
 				</div>
 			</header>
 			<main className="main">
-				<Tabs />
-				<Block api={props.api} items={props.tags} tagsUrl={props.api.tags} />
+				<Tabs items={tabItems} />
+				<Block
+					api={props.api}
+					items={props.tags}
+					tagsUrl={props.api.tags}
+				/>
 				<ArticleList
 					api={props.api}
 					items={items}

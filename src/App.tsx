@@ -8,8 +8,7 @@ import NotFound from './pages/NotFound';
 import MainPage from './pages/MainPage';
 import ArticlePage from './pages/ArticlePage';
 import AllArticlesPage from './pages/AllArticlesPage';
-import ProfilePage from './pages/ProfilePage';
-import AuthorPage from './pages/ProfilePage/AuthorPage';
+import { ProfilePage, AuthorPage } from './pages/ProfilePage';
 import {
 	NewPostPage,
 	SettingsPage,

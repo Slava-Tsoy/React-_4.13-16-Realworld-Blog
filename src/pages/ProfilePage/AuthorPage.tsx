@@ -21,7 +21,7 @@ interface Props {
 	tags: any;
 }
 
-function ProfilePage(props: Props) {
+function AuthorPage(props: Props) {
 	const token = localStorage.getItem('token');
 
 	const [error, setError] = useState(null);
@@ -238,7 +238,11 @@ function ProfilePage(props: Props) {
 				</div>
 			</header>
 			<main className="main">
-				<Block api={props.api} items={props.tags} tagsUrl={props.api.tags} />
+				<Block
+					api={props.api}
+					items={props.tags}
+					tagsUrl={props.api.tags}
+				/>
 				<ArticleList
 					api={props.api}
 					items={items}
@@ -261,4 +265,4 @@ function ProfilePage(props: Props) {
 	);
 }
 
-export default ProfilePage;
+export default AuthorPage;

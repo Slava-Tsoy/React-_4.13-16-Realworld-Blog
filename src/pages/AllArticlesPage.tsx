@@ -20,7 +20,7 @@ interface Props {
 function AllArticlesPage(props: Props) {
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(false);
-	
+
 	const [searchParams] = useSearchParams();
 	const currentOffset = parseInt(searchParams.get('offset') || '0');
 	const currentTag = searchParams.get('tag');
@@ -29,7 +29,8 @@ function AllArticlesPage(props: Props) {
 
 	const [items, setItems] = useState(props.articles);
 	const [itemsCount, setItemsCount] = useState(props.articlesCount);
-	const fetch_articles = props.api.url + props.api.articles + offsetParam + tagParam;
+	const fetch_articles =
+		props.api.url + props.api.articles + offsetParam + tagParam;
 
 	useEffect(() => {
 		const control = new AbortController();
@@ -47,7 +48,7 @@ function AllArticlesPage(props: Props) {
 				});
 				const data = await res.json();
 				const { articles, articlesCount } = data;
-				
+
 				setItems(articles);
 				setItemsCount(articlesCount);
 			} catch (error: any) {
@@ -78,7 +79,11 @@ function AllArticlesPage(props: Props) {
 				<Panel />
 			</header>
 			<main className="main">
-				<Block api={props.api} items={props.tags} tagsUrl={props.api.tags} />
+				<Block
+					api={props.api}
+					items={props.tags}
+					tagsUrl={props.api.tags}
+				/>
 				<ArticleList
 					api={props.api}
 					items={items}

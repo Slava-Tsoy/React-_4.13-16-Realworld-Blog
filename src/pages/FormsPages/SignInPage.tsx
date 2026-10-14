@@ -1,5 +1,6 @@
 import './Forms.scss';
 
+import { useState } from 'react';
 import clsx from 'clsx';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +8,7 @@ import { useAuth } from '../../hooks/useAuth';
 
 import Panel from '../../components/Panel';
 import Copyright from '../../components/Copyright';
+import ModalWindow from '../../components/ModalWindow';
 
 interface Props {
 	api: any;
@@ -21,6 +23,13 @@ function SignInPage(props: Props) {
 	const fetch_url = props.api.url + props.api.users + props.api.login;
 	const navigate = useNavigate();
 
+	const [errorAuth, setErrorAuth] = useState(false);
+	const [errorData, setErrorData] = useState(null);
+
+	const closeModalWindow = () => {
+		setErrorAuth(false);
+	};
+
 	const onSubmit = async (data: any) => {
 		try {
 			const res = await fetch(fetch_url, {
@@ -28,6 +37,23 @@ function SignInPage(props: Props) {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ user: data }),
 			});
+
+			if (res.status === 401) {
+				const errData: any = {
+					header: 'Authentication error!',
+					body: (
+						<>
+							Check that the entered data is correct or{' '}
+							<a href="/sign_up">register</a>.
+						</>
+					),
+				};
+
+				setErrorData(errData);
+				setErrorAuth(true);
+
+				return;
+			}
 
 			if (res.ok) {
 				alert('Login successful!');
@@ -114,6 +140,9 @@ function SignInPage(props: Props) {
 					<Copyright />
 				</div>
 			</footer>
+			{errorAuth && (
+				<ModalWindow data={errorData} close={closeModalWindow} />
+			)}
 		</>
 	);
 }

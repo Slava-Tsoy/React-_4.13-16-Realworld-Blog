@@ -2,7 +2,7 @@ import './Tags.scss';
 import { Link, useSearchParams } from 'react-router-dom';
 
 interface Props {
-	api: any,
+	api: any;
 	items: any;
 	tagsUrl: string;
 }
@@ -12,15 +12,12 @@ function Tags(props: Props) {
 	const [searchParams] = useSearchParams();
 	const currentOffset = searchParams.get('offset') || '0';
 	const uri = `${api.articles}?offset=${currentOffset}`;
-	
+
 	return (
 		<ul className="tags">
 			{items.map((e: any, key: number) => (
 				<li className="tags__item" key={key}>
-					<Link
-						to={`${uri}&tag=${e}`}
-						className="tags__link"
-					>
+					<Link to={`${uri}&tag=${e}`} className="tags__link">
 						{e}
 					</Link>
 				</li>

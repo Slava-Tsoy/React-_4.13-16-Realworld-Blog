@@ -28,6 +28,7 @@
 			padding: 12px 24px;
 		}
 		textarea {
+			display: block;
 			width: 100%;
 			padding: 12px 10px 12px 24px;
 			resize: none;
@@ -44,6 +45,11 @@
 			textarea {
 				border-color: var(--red);
 			}
+		}
+
+		&--tags {
+			overflow-y: scroll;
+			height: 114px;
 		}
 	}
 

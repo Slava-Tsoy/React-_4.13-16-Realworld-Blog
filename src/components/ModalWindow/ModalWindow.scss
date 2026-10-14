@@ -1,0 +1,48 @@
+/* Modal Window */
+.modal {
+	&-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 1000;
+		background-color: rgba(0, 0, 0, 0.5);
+	}
+
+	&-window {
+		box-shadow: 0 0 50px 0 rgba(0, 0, 0, 0.5);
+		background-color: var(--white);
+		border-radius: var(--radius);
+		padding: 20px;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		width: 480px;
+
+		&__header {
+			display: flex;
+			justify-content: space-between;
+			gap: 20px;
+			font-family: 'Titillium Web';
+			font-weight: bold;
+			font-size: 18px;
+		}
+
+		&__title {
+			flex-grow: 1;
+		}
+
+		&__close {
+			cursor: pointer;
+			user-select: none;
+		}
+
+		&__body {
+			overflow: hidden;
+		}
+	}
+}
