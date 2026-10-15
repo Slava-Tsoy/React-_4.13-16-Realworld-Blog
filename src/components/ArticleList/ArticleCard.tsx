@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 
@@ -27,6 +27,15 @@ function ArticleCard(props: Props) {
 	const [isFavorited, setIsFavorited] = useState(props.favorited);
 	const [favoritesCount, setFavoritesCount] = useState(props.favoritesCount);
 	const fetch_favorite = `${api.url + api.articles}/${slug}/favorite`;
+
+	useEffect(() => {
+		function setFavoritesParams() {
+			setIsFavorited(props.favorited);
+			setFavoritesCount(props.favoritesCount);
+		}
+
+		setFavoritesParams();
+	}, [props.favorited, props.favoritesCount]);
 
 	async function handleFavorite() {
 		const method = isFavorited ? 'DELETE' : 'POST';

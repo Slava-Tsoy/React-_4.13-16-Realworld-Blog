@@ -36,7 +36,6 @@ function ProfilePage(props: Props) {
 
 	const { user } = useAuth();
 	const [currentUser, setCurrentUser] = useState(user);
-	const fetch_current_user = props.api.url + props.api.user;
 
 	const [tabItems, setTabItems] = useState([
 		{
@@ -101,10 +100,9 @@ function ProfilePage(props: Props) {
 		}
 
 		getData(fetchFavoriteArticles, 'articles');
-		getData(fetch_current_user, 'currentUser');
 
 		return () => control.abort();
-	}, [fetchFavoriteArticles, fetch_current_user, token]);
+	}, [fetchFavoriteArticles, token]);
 
 	function getItIsActive(name: string) {
 		const currentTab = tabItems.filter((item: any) => {

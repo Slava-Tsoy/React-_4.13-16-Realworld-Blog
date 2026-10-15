@@ -61,43 +61,36 @@ function ArticleList(props: Props) {
 		localStorage.setItem(user?.username, JSON.stringify(updatedUser));
 	}
 
-	function setFavoriteState(items: any, slug: string, flag?: string) {
-		const foundItem = items.find((item: any) => {
-			return item.slug === slug;
-		});
-
-		if (foundItem) {
-			switch (flag) {
-				case 'count':
-					return foundItem.favoritesCount;
-				case 'state':
-					return foundItem.favorited;
-			}
-		}
-
-		return false;
+	function getItemExist(items: any, slug: string) {
+		return items
+			.filter((item: any) => {
+				return item.favorited === true;
+			})
+			.find((item: any) => {
+				return item.slug === slug;
+			});
 	}
 
 	return (
 		<section className="article-list">
-			{items.map((e: any, key: number) => (
-				<ArticleCard
-					api={api}
-					key={key}
-					item={e}
-					itemUrl={articlesUrl}
-					tagsUrl={tagsUrl}
-					addToFavorites={addToFavorites}
-					favorited={() =>
-						setFavoriteState(favorites, e.slug, 'state') ||
-						e.favorited
-					}
-					favoritesCount={() =>
-						setFavoriteState(favorites, e.slug, 'count') ||
-						e.favoritesCount
-					}
-				/>
-			))}
+			{items.map((e: any, key: number) => {
+				const itemExist = getItemExist(favorites, e.slug);
+
+				return (
+					<ArticleCard
+						api={api}
+						key={key}
+						item={e}
+						itemUrl={articlesUrl}
+						tagsUrl={tagsUrl}
+						addToFavorites={addToFavorites}
+						favorited={
+							!itemExist ? e.favorited : itemExist.favorited
+						}
+						favoritesCount={e.favoritesCount}
+					/>
+				);
+			})}
 		</section>
 	);
 }
