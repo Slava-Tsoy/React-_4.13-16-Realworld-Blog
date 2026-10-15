@@ -5,10 +5,11 @@ import clsx from 'clsx';
 
 interface Props {
 	items: any;
+	filter: any;
 }
 
 function Tabs(props: Props) {
-	const { items } = props;
+	const { items, filter } = props;
 
 	const handleClick = (e: any) => {
 		e.preventDefault();
@@ -17,15 +18,7 @@ function Tabs(props: Props) {
 			return;
 		}
 
-		const allTabs = e.target
-			.closest('ul.tabs')
-			.querySelectorAll('li.tabs__item');
-		const active = e.target.closest('li.tabs__item');
-
-		allTabs.forEach((i: any) => {
-			i.classList.remove('tabs__item--active');
-		});
-		active.classList.add('tabs__item--active');
+		filter(e);
 	};
 
 	return (

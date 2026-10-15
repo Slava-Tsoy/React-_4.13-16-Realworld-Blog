@@ -38,7 +38,7 @@ function ProfilePage(props: Props) {
 	const [currentUser, setCurrentUser] = useState(user);
 	const fetch_current_user = props.api.url + props.api.user;
 
-	const tabItems = [
+	const [tabItems, setTabItems] = useState([
 		{
 			name: 'Favorites',
 			uri: `${fetch_articles}&favorited=${user.username}`,
@@ -49,9 +49,10 @@ function ProfilePage(props: Props) {
 			uri: `${fetch_articles}&author=${user.username}`,
 			active: false,
 		},
-	];
-
-	const fetch_favorited_articles = `${fetch_articles}&favorited=${user.username}`;
+	]);
+	const [fetchFavoriteArticles, setFetchFavoriteArticles] = useState(
+		`${fetch_articles}&favorited=${user.username}`,
+	);
 
 	useEffect(() => {
 		const control = new AbortController();
@@ -99,11 +100,43 @@ function ProfilePage(props: Props) {
 			}
 		}
 
-		getData(fetch_favorited_articles, 'articles');
+		getData(fetchFavoriteArticles, 'articles');
 		getData(fetch_current_user, 'currentUser');
 
 		return () => control.abort();
-	}, [fetch_current_user, fetch_favorited_articles, token]);
+	}, [fetchFavoriteArticles, fetch_current_user, token]);
+
+	function getItIsActive(name: string) {
+		const currentTab = tabItems.filter((item: any) => {
+			return item.name === name;
+		});
+		const [activeTab] = currentTab;
+		const { active } = activeTab;
+
+		return active;
+	}
+
+	function setActiveTab(name: string) {
+		const updatedTabs: any = tabItems.map((item: any) => {
+			return item.name === name
+				? { ...item, active: true }
+				: { ...item, active: false };
+		});
+
+		setTabItems(updatedTabs);
+	}
+
+	function filterByTab(e: any) {
+		const { href, innerText } = e.target;
+		const isActive = getItIsActive(innerText);
+
+		if (isActive) {
+			return;
+		}
+
+		setFetchFavoriteArticles(href);
+		setActiveTab(innerText);
+	}
 
 	if (loading) {
 		return <Preloader />;
@@ -127,7 +160,7 @@ function ProfilePage(props: Props) {
 				</div>
 			</header>
 			<main className="main">
-				<Tabs items={tabItems} />
+				<Tabs items={tabItems} filter={filterByTab} />
 				<Block
 					api={props.api}
 					items={props.tags}
