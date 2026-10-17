@@ -1,12 +1,14 @@
 import './ArticlePage.scss';
 
 import Markdown from 'react-markdown';
-
 import { useState, useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
+import { useAuth } from '../../hooks/useAuth';
 
 import Preloader from '../../components/Preloader';
+import ErrorPage from '../ErrorPage';
+
 import Panel from '../../components/Panel';
 import Badge from '../../components/Badge';
 import Tags from '../../components/Tags';
@@ -20,39 +22,88 @@ interface Props {
 
 function ArticlePage(props: Props) {
 	const token = localStorage.getItem('token');
+
+	const [error, setError] = useState(null);
+	const [loading, setLoading] = useState(false);
+
+	const { api, articles } = props;
+
+	const { user } = useAuth();
 	const { slug } = useParams();
-	const location = useLocation();
-	const [item, setItem] = useState({ article: {} });
-	const [loading, setLoading] = useState(true);
-	const fetch_url = props.api.url + props.api.articles + `/${slug}`;
+	const [currentPost] = articles.filter((art: any) => art.slug === slug);
+	const {
+		state: { data },
+	} = useLocation();
+	const [item, setItem] = useState({ article: data || currentPost });
+	const fetch_article = `${api.url + api.articles}/${slug}`;
 
 	useEffect(() => {
-		fetch(fetch_url)
-			.then((res: Response) => res.json())
-			.then((data: any) => {
+		const control = new AbortController();
+
+		async function getData(url: string) {
+			try {
+				setLoading(true);
+				
+				const res = await fetch(url, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					signal: control.signal,
+				});
+				const data = await res.json();
+
 				setItem(data);
+			} catch (error: any) {
+				if (error.name !== 'AbortError') {
+					setError(error.message);
+				}
+			} finally {
 				setLoading(false);
-			})
-			.catch((error) => {
-				console.error(error);
-				setLoading(false);
-			});
-	}, [fetch_url]);
+			}
+		}
+
+		getData(fetch_article);
+
+		return () => control.abort();
+	}, [fetch_article]);
+
+	const { article } = item;
+	const { author } = article;
+	const own = author.username === user.username;
+
+	const [isFavorite, setIsFavorite] = useState(data.favorited);
+
+	function handleFavorite(e: any) {
+		const method = isFavorite ? 'DELETE' : 'POST';
+
+		try {
+			setLoading(true);
+			setIsFavorite(!isFavorite);
+			console.log(method);
+		} catch (error: any) {
+			console.error('Network error:', error);
+		} finally {
+			setLoading(false);
+		}
+		console.log(e.target.innerText);
+	}
+
+	function handleEdit(e: any) {
+		console.log(e.target.innerText);
+	}
+
+	function handleDelete(e: any) {
+		console.log(e.target.innerText);
+	}
 
 	if (loading) {
 		return <Preloader />;
 	}
 
-	const article =
-		item.article ||
-		location.state?.data ||
-		props.articles.filter((art: any) => art.slug === slug)[0];
-	const author = article.author;
-	const isMyPost = false;
-
-	async function toggleFavorite() {}
-
-	function handleClick() {}
+	if (error) {
+		return <ErrorPage />;
+	}
 
 	return (
 		<>
@@ -67,6 +118,7 @@ function ArticlePage(props: Props) {
 								parseISO(article.createdAt),
 								'dd MMMM yyyy',
 							)}
+							own={own}
 						/>
 					</div>
 				</div>
@@ -92,24 +144,27 @@ function ArticlePage(props: Props) {
 								parseISO(article.createdAt),
 								'dd MMMM yyyy',
 							)}
+							own={own}
 						/>
 						{token && (
 							<>
-								{isMyPost ? (
+								{own ? (
 									<>
 										<Button
 											href="#"
 											text="Edit"
 											small={true}
 											type="secondary"
-											onClick={handleClick}
+											onClick={handleEdit}
+											disabled={false}
 										/>
 										<Button
 											href="#"
 											text="Delete"
 											small={true}
 											type="warning"
-											onClick={handleClick}
+											onClick={handleDelete}
+											disabled={false}
 										/>
 									</>
 								) : (
@@ -117,8 +172,9 @@ function ArticlePage(props: Props) {
 										href="#"
 										text={'Favorite article'}
 										small={true}
-										type={'primary'}
-										onClick={toggleFavorite}
+										type={isFavorite ? 'warning' : 'primary'}
+										onClick={handleFavorite}
+										disabled={false}
 									/>
 								)}
 							</>

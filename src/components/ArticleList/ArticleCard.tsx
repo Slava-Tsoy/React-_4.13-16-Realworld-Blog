@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
+import { useAuth } from '../../hooks/useAuth';
 
 import Tags from '../Tags';
 import Badge from '../Badge';
@@ -23,6 +24,8 @@ function ArticleCard(props: Props) {
 
 	const { api, item, itemUrl, tagsUrl, addToFavorites } = props;
 	const { author, createdAt, slug } = item;
+	const { user } = useAuth();
+	const own = author.username === user.username;
 
 	const [isFavorited, setIsFavorited] = useState(props.favorited);
 	const [favoritesCount, setFavoritesCount] = useState(props.favoritesCount);
@@ -77,6 +80,7 @@ function ArticleCard(props: Props) {
 				<Badge
 					author={author.username}
 					date={format(parseISO(createdAt), 'dd MMMM yyyy')}
+					own={own}
 				/>
 				{token && (
 					<Button
@@ -86,12 +90,13 @@ function ArticleCard(props: Props) {
 						type={isFavorited ? 'warning' : 'secondary'}
 						icon="favorite"
 						onClick={handleFavorite}
+						disabled={own}
 					/>
 				)}
 			</div>
 			<div className="article-card__content">
 				<h2 className="article-card__title">
-					<Link to={`${itemUrl}/${slug}`} state={{ data: item }}>
+					<Link to={`${itemUrl}/${slug}`} state={{ data: {...item, favorited: isFavorited} }}>
 						{item.title}
 					</Link>
 				</h2>
