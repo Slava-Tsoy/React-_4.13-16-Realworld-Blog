@@ -43,7 +43,7 @@ function ArticlePage(props: Props) {
 		async function getData(url: string) {
 			try {
 				setLoading(true);
-				
+
 				const res = await fetch(url, {
 					method: 'GET',
 					headers: {
@@ -73,29 +73,108 @@ function ArticlePage(props: Props) {
 	const own = author.username === user.username;
 
 	const [isFavorite, setIsFavorite] = useState(data.favorited);
+	const [favorites, setFavorites] = useState(getFavorites());
+	const fetch_favorite = `${api.url + api.articles}/${slug}/favorite`;
 
-	function handleFavorite(e: any) {
+	const handleFavorite = async () => {
 		const method = isFavorite ? 'DELETE' : 'POST';
 
 		try {
 			setLoading(true);
-			setIsFavorite(!isFavorite);
-			console.log(method);
+
+			const res = await fetch(fetch_favorite, {
+				method: method,
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Token ${token}`,
+				},
+			});
+
+			if (res.ok) {
+				setIsFavorite(!isFavorite);
+			} else {
+				console.error('Server error when changing favorite status');
+			}
+
+			const { article } = await res.json();
+			const { slug, favorited, favoritesCount } = article;
+			const favorite_article = { slug, favorited, favoritesCount };
+
+			setIsFavorite(favorited);
+			addToFavorites(favorite_article);
 		} catch (error: any) {
 			console.error('Network error:', error);
 		} finally {
 			setLoading(false);
 		}
-		console.log(e.target.innerText);
+	};
+
+	function getItemExist(items: any, slug: string) {
+		return items.find((item: any) => {
+			return item.slug === slug;
+		});
 	}
 
-	function handleEdit(e: any) {
-		console.log(e.target.innerText);
+	useEffect(() => {
+		function setFavoritesParams() {
+			const { favorited } = getItemExist(favorites, article.slug);
+
+			setIsFavorite(favorited);
+		}
+
+		setFavoritesParams();
+	}, [article.slug, favorites]);
+
+	function getLocalUser(key: string) {
+		const value: any = localStorage.getItem(key);
+
+		return !value ? user : JSON.parse(value);
 	}
 
-	function handleDelete(e: any) {
-		console.log(e.target.innerText);
+	function getFavorites() {
+		const value: any = localStorage.getItem(user?.username);
+		const localUser = JSON.parse(value);
+
+		if (localUser && localUser.favorites) {
+			return localUser.favorites;
+		}
+
+		return [];
 	}
+
+	function getSaveFavorites(items: any, newItem: any) {
+		const itemExist = items.some((item: any) => {
+			return item.slug === newItem.slug;
+		});
+
+		if (itemExist) {
+			return items.map((item: any) => {
+				return item.slug === newItem.slug
+					? { ...item, ...newItem }
+					: item;
+			});
+		} else {
+			return [...items, newItem];
+		}
+	}
+
+	function addToFavorites(article: any) {
+		const favorite_list = getSaveFavorites(favorites, article);
+		const localUser = getLocalUser(user?.username);
+		const updatedUser = { ...localUser, favorites: favorite_list };
+
+		setFavorites(favorite_list);
+
+		localStorage.setItem(user?.username, JSON.stringify(updatedUser));
+	}
+
+	const handleEdit = (e: any) => {
+		console.log(e.target.innerText);
+	};
+
+	const handleDelete = (e: any) => {
+		console.log(e.target.innerText);
+	};
 
 	if (loading) {
 		return <Preloader />;
@@ -172,7 +251,9 @@ function ArticlePage(props: Props) {
 										href="#"
 										text={'Favorite article'}
 										small={true}
-										type={isFavorite ? 'warning' : 'primary'}
+										type={
+											isFavorite ? 'warning' : 'primary'
+										}
 										onClick={handleFavorite}
 										disabled={false}
 									/>

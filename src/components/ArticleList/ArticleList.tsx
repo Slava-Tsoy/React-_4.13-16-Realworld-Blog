@@ -62,13 +62,9 @@ function ArticleList(props: Props) {
 	}
 
 	function getItemExist(items: any, slug: string) {
-		return items
-			.filter((item: any) => {
-				return item.favorited === true;
-			})
-			.find((item: any) => {
-				return item.slug === slug;
-			});
+		return items.find((item: any) => {
+			return item.slug === slug;
+		});
 	}
 
 	return (

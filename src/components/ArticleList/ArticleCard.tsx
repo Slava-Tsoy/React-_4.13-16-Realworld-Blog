@@ -96,7 +96,10 @@ function ArticleCard(props: Props) {
 			</div>
 			<div className="article-card__content">
 				<h2 className="article-card__title">
-					<Link to={`${itemUrl}/${slug}`} state={{ data: {...item, favorited: isFavorited} }}>
+					<Link
+						to={`${itemUrl}/${slug}`}
+						state={{ data: { ...item, favorited: isFavorited } }}
+					>
 						{item.title}
 					</Link>
 				</h2>
