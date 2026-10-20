@@ -71,7 +71,12 @@ function NewPostPage(props: Props) {
 			}
 
 			const { article } = await res.json();
-			navigate(`${api.articles}/${article.slug}`);
+
+			navigate(`${api.articles}/${article.slug}`, {
+				state: {
+					data: { ...article },
+				},
+			});
 		} catch (error) {
 			console.error('Create error:', error);
 		}

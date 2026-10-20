@@ -2,7 +2,7 @@ import './ArticlePage.scss';
 
 import Markdown from 'react-markdown';
 import { useState, useEffect } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -27,6 +27,7 @@ function ArticlePage(props: Props) {
 	const [loading, setLoading] = useState(false);
 
 	const { api, articles } = props;
+	const navigate = useNavigate();
 
 	const { user } = useAuth();
 	const { slug } = useParams();
@@ -76,54 +77,11 @@ function ArticlePage(props: Props) {
 	const [favorites, setFavorites] = useState(getFavorites());
 	const fetch_favorite = `${api.url + api.articles}/${slug}/favorite`;
 
-	const handleFavorite = async () => {
-		const method = isFavorite ? 'DELETE' : 'POST';
-
-		try {
-			setLoading(true);
-
-			const res = await fetch(fetch_favorite, {
-				method: method,
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Token ${token}`,
-				},
-			});
-
-			if (res.ok) {
-				setIsFavorite(!isFavorite);
-			} else {
-				console.error('Server error when changing favorite status');
-			}
-
-			const { article } = await res.json();
-			const { slug, favorited, favoritesCount } = article;
-			const favorite_article = { slug, favorited, favoritesCount };
-
-			setIsFavorite(favorited);
-			addToFavorites(favorite_article);
-		} catch (error: any) {
-			console.error('Network error:', error);
-		} finally {
-			setLoading(false);
-		}
-	};
-
 	function getItemExist(items: any, slug: string) {
 		return items.find((item: any) => {
 			return item.slug === slug;
 		});
 	}
-
-	useEffect(() => {
-		function setFavoritesParams() {
-			const { favorited } = getItemExist(favorites, article.slug);
-
-			setIsFavorite(favorited);
-		}
-
-		setFavoritesParams();
-	}, [article.slug, favorites]);
 
 	function getLocalUser(key: string) {
 		const value: any = localStorage.getItem(key);
@@ -168,12 +126,78 @@ function ArticlePage(props: Props) {
 		localStorage.setItem(user?.username, JSON.stringify(updatedUser));
 	}
 
-	const handleEdit = (e: any) => {
-		console.log(e.target.innerText);
+	useEffect(() => {
+		const articleExist = getItemExist(favorites, article.slug);
+
+		if (!articleExist) {
+			return;
+		}
+
+		const { favorited } = articleExist;
+		const setFavoriteParam = () => {
+			setIsFavorite(favorited);
+		};
+
+		setFavoriteParam();
+	}, [article.slug, favorites]);
+
+	const handleFavorite = async () => {
+		const method = isFavorite ? 'DELETE' : 'POST';
+
+		try {
+			setLoading(true);
+
+			const res = await fetch(fetch_favorite, {
+				method: method,
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Token ${token}`,
+				},
+			});
+
+			if (res.ok) {
+				setIsFavorite(!isFavorite);
+			} else {
+				console.error('Server error when changing favorite status');
+			}
+
+			const { article } = await res.json();
+			const { slug, favorited, favoritesCount } = article;
+			const favorite_article = { slug, favorited, favoritesCount };
+
+			setIsFavorite(favorited);
+			addToFavorites(favorite_article);
+		} catch (error: any) {
+			console.error('Network error:', error);
+		} finally {
+			setLoading(false);
+		}
 	};
 
-	const handleDelete = (e: any) => {
-		console.log(e.target.innerText);
+	const handleEdit = async () => {
+		
+	};
+
+	const handleDelete = async () => {
+		const fetch_delete = `${api.url + api.articles}/${slug}`;
+
+		try {
+			const res = await fetch(fetch_delete, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Token ${token}`,
+				},
+			});
+
+			if (res.ok && res.status === 204) {
+				alert(`Post "${slug}" successfully deleted!`);
+			}
+
+			navigate('/');
+		} catch (error: any) {
+			console.error('Network error:', error);
+		}
 	};
 
 	if (loading) {
