@@ -125,7 +125,13 @@ function App() {
 					/>
 					<Route
 						path="/articles/:slug"
-						element={<ArticlePage api={api} articles={articles} />}
+						element={
+							<ArticlePage
+								api={api}
+								articles={articles}
+								tags={tags}
+							/>
+						}
 					/>
 					<Route
 						path="/profile"

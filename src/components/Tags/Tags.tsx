@@ -5,10 +5,11 @@ interface Props {
 	api: any;
 	items: any;
 	tagsUrl: string;
+	selectedItems?: any;
 }
 
 function Tags(props: Props) {
-	const { api, items } = props;
+	const { api, items, selectedItems } = props;
 	const [searchParams] = useSearchParams();
 	const currentOffset = searchParams.get('offset') || '0';
 	const uri = `${api.articles}?offset=${currentOffset}`;

@@ -14,10 +14,12 @@ import Badge from '../../components/Badge';
 import Tags from '../../components/Tags';
 import Button from '../../components/Button';
 import Copyright from '../../components/Copyright';
+import EditForm from '../../components/EditForm';
 
 interface Props {
 	api: any;
 	articles: any;
+	tags: any;
 }
 
 function ArticlePage(props: Props) {
@@ -26,7 +28,7 @@ function ArticlePage(props: Props) {
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(false);
 
-	const { api, articles } = props;
+	const { api, articles, tags } = props;
 	const navigate = useNavigate();
 
 	const { user } = useAuth();
@@ -76,6 +78,8 @@ function ArticlePage(props: Props) {
 	const [isFavorite, setIsFavorite] = useState(data.favorited);
 	const [favorites, setFavorites] = useState(getFavorites());
 	const fetch_favorite = `${api.url + api.articles}/${slug}/favorite`;
+
+	const [isEditing, setIsEditing] = useState(false);
 
 	function getItemExist(items: any, slug: string) {
 		return items.find((item: any) => {
@@ -175,11 +179,22 @@ function ArticlePage(props: Props) {
 	};
 
 	const handleEdit = async () => {
-		
+		setIsEditing(true);
+	};
+
+	const handleClose = () => {
+		setIsEditing(false);
 	};
 
 	const handleDelete = async () => {
 		const fetch_delete = `${api.url + api.articles}/${slug}`;
+		const confirmed = window.confirm(
+			`Are you sure you want to delete the post "${slug}"?`,
+		);
+
+		if (!confirmed) {
+			return;
+		}
 
 		try {
 			const res = await fetch(fetch_delete, {
@@ -292,6 +307,14 @@ function ArticlePage(props: Props) {
 					<Copyright />
 				</div>
 			</footer>
+			{isEditing && (
+				<EditForm
+					api={api}
+					data={article}
+					tags={tags}
+					close={handleClose}
+				/>
+			)}
 		</>
 	);
 }
