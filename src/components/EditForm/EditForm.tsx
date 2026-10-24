@@ -54,7 +54,7 @@ function EditForm(props: Props) {
 	}
 
 	async function updatePost(formData: any) {
-		console.log(formData);
+		
 	}
 
 	const handleClose = () => {
