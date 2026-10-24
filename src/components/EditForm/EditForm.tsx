@@ -3,6 +3,7 @@ import './EditForm.scss';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import clsx from 'clsx';
+import { useNavigate } from 'react-router-dom';
 
 import Tags from '../Tags';
 
@@ -14,22 +15,28 @@ interface Props {
 }
 
 function EditForm(props: Props) {
-	const { api, data, tags, close } = props;
-	const { title, description, body, tagList } = data;
-	const [selectedTags, setSelectedTags] = useState(tagList);
-	const { register, handleSubmit, formState, setValue, reset } = useForm({
-		mode: 'onChange',
-	});
-	const { errors } = formState;
+	const token = localStorage.getItem('token');
 
-	useEffect(() => {
-		reset({
+	const { api, data, tags, close } = props;
+	const { slug, title, description, body, tagList } = data;
+	const [selectedTags, setSelectedTags] = useState(tagList);
+	const { register, handleSubmit, formState, setValue } = useForm({
+		mode: 'onChange',
+		defaultValues: {
 			title: title,
 			description: description,
 			body: body,
-		});
+			tagList: selectedTags,
+		},
+	});
+	const { errors } = formState;
+	const navigate = useNavigate();
+
+	const fetch_article = `${api.url + api.articles}/${slug}`;
+
+	useEffect(() => {
 		setValue('tagList', selectedTags);
-	}, [setValue, selectedTags, reset, title, description, body]);
+	}, [selectedTags, setValue]);
 
 	function toggleItems(newItem: string) {
 		setSelectedTags((items: any) => {
@@ -54,7 +61,33 @@ function EditForm(props: Props) {
 	}
 
 	async function updatePost(formData: any) {
-		
+		const updatedPost = { article: formData };
+
+		try {
+			const res = await fetch(fetch_article, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Token ${token}`,
+				},
+				body: JSON.stringify(updatedPost),
+			});
+
+			if (res.ok) {
+				alert('The article has been successfully updated.');
+			}
+
+			const { article } = await res.json();
+
+			navigate(`${api.articles}/${article.slug}`, {
+				state: {
+					data: { ...article },
+				},
+			});
+			close();
+		} catch (error) {
+			console.error('Update error:', error);
+		}
 	}
 
 	const handleClose = () => {
@@ -91,9 +124,7 @@ function EditForm(props: Props) {
 								<input
 									type="text"
 									placeholder="Title"
-									{...register('title', {
-										required: 'Title is required',
-									})}
+									{...register('title')}
 								/>
 								{typeof errors.title?.message === 'string' && (
 									<span className="edit-form__error-message">
@@ -110,9 +141,7 @@ function EditForm(props: Props) {
 								<input
 									type="text"
 									placeholder="Short description"
-									{...register('description', {
-										required: 'Description is required',
-									})}
+									{...register('description')}
 								/>
 								{typeof errors.description?.message ===
 									'string' && (
@@ -130,9 +159,7 @@ function EditForm(props: Props) {
 								<textarea
 									rows={5}
 									placeholder="Input your text"
-									{...register('body', {
-										required: 'Text is required',
-									})}
+									{...register('body')}
 								></textarea>
 								{typeof errors.body?.message === 'string' && (
 									<span className="edit-form__error-message">
