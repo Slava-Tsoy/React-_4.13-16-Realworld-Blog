@@ -4,7 +4,7 @@ import Markdown from 'react-markdown';
 import { useState, useEffect } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../Hooks/useAuth';
 
 import Preloader from '../../components/Preloader';
 import ErrorPage from '../ErrorPage';
@@ -73,7 +73,7 @@ function ArticlePage(props: Props) {
 
 	const { article } = item;
 	const { author } = article;
-	const own = author.username === user.username;
+	const own = author?.username === user?.username;
 
 	const [isFavorite, setIsFavorite] = useState(data.favorited);
 	const [favorites, setFavorites] = useState(getFavorites());

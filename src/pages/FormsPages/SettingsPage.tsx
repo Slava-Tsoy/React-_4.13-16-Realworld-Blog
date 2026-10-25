@@ -3,7 +3,7 @@ import './Forms.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { useForm } from 'react-hook-form';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../Hooks/useAuth';
 
 import Panel from '../../components/Panel';
 import Copyright from '../../components/Copyright';

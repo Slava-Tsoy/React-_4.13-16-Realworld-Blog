@@ -2,7 +2,7 @@ import './ProfilePage.scss';
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../Hooks/useAuth';
 
 import Panel from '../../components/Panel';
 import Tabs from '../../components/Tabs';

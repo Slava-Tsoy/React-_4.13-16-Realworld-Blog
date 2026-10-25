@@ -4,7 +4,7 @@ import { useState } from 'react';
 import clsx from 'clsx';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../Hooks/useAuth';
 
 import Panel from '../../components/Panel';
 import Copyright from '../../components/Copyright';

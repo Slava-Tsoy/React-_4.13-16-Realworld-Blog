@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { AuthContext } from './hooks/AuthContext';
+import { AuthContext } from './Hooks/AuthContext';
 
 const API = {
 	root_url: 'https://realworld.habsida.net/api',
