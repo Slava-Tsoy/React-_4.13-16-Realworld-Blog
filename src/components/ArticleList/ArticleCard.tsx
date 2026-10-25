@@ -25,7 +25,7 @@ function ArticleCard(props: Props) {
 	const { api, item, itemUrl, tagsUrl, addToFavorites } = props;
 	const { author, createdAt, slug } = item;
 	const { user } = useAuth();
-	const own = author.username === user.username;
+	const own = author?.username === user?.username;
 
 	const [isFavorited, setIsFavorited] = useState(props.favorited);
 	const [favoritesCount, setFavoritesCount] = useState(props.favoritesCount);
